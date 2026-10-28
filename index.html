@@ -244,6 +244,10 @@ h1 em{font-weight:500;color:transparent}
 
 #stage.origin-warm{background:radial-gradient(ellipse at 45% 44%,#754522 0%,#4b2817 33%,#2b150d 64%,#120805 100%);transition:background 1.4s ease}
 #assistant[data-state="thinking"] .live-pill{color:#ffdda5;box-shadow:0 0 14px #e2ad5c22}
+/* Deep glass, hairline luminous borders, and low-opacity surfaces that reveal the scene behind them. */
+#storyPanel,#assistant{background:linear-gradient(135deg,rgba(28,17,12,.34),rgba(12,7,5,.48));backdrop-filter:blur(20px) saturate(118%);-webkit-backdrop-filter:blur(20px) saturate(118%);border:1px solid transparent;background-clip:padding-box;position:absolute}
+#storyPanel:before,#assistant:before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(135deg,rgba(255,230,190,.42),rgba(255,255,255,.035) 38%,rgba(230,145,69,.22) 75%,rgba(255,255,255,.025));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+@media(prefers-reduced-motion:reduce){.volume-beam,.heat-haze{animation:none!important}}
 </style>
 </head>
 <body>
@@ -283,6 +287,12 @@ h1 em{font-weight:500;color:transparent}
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/postprocessing/ShaderPass.js';
+import { SSAOPass } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/postprocessing/SSAOPass.js';
+import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js';
 
 const stage=document.querySelector('#stage'), canvas=document.querySelector('#scene');
 const triggerButton=document.querySelector('#trigger'), muteButton=document.querySelector('#mute'), statusText=document.querySelector('#statusText');
@@ -330,13 +340,15 @@ function setRoastFromText(text){
  roastChip.classList.add('active');
 }
 function addBubble(text,who='bot'){const el=document.createElement('div');el.className='bubble '+who;el.textContent=text;chatLog.appendChild(el);chatLog.scrollTop=chatLog.scrollHeight;return el;}
-function typeAnswer(node,text){
+function typeAnswer(node,text,question=''){
  const answer=String(text||'');let i=0;
  document.querySelector('#assistant').dataset.state='thinking';
  if(window.gsap){gsap.killTweensOf(node);node.textContent='';gsap.to({n:0},{n:answer.length,duration:Math.min(2.1,Math.max(.35,answer.length*.012)),ease:'none',onUpdate:function(){const next=Math.floor(this.targets()[0].n);if(next!==i){i=next;node.textContent=answer.slice(0,i);chatLog.scrollTop=chatLog.scrollHeight;}},onComplete:()=>{document.querySelector('#assistant').dataset.state='done';}});}
  else{node.textContent=answer;document.querySelector('#assistant').dataset.state='done';}
- const lower=answer+' '+(text||'');
- if(/烘焙|中深烘|中烘|深烘/.test(lower)){targetBeanColor.copy(roastColors.dark);document.querySelector('.heat-haze').style.opacity='.42';}
+ const lower=answer+' '+question;
+ if(/中深烘|中深焙/.test(lower)){targetBeanColor.set(0x24100b);rim.color.set(0xff3e22);rim.intensity=34;roastChip.textContent='中深烘 · 焦糖与黑巧';document.querySelector('.heat-haze').style.opacity='.5';}
+ else if(/烘焙|中烘|深烘/.test(lower)){targetBeanColor.copy(roastColors.dark);document.querySelector('.heat-haze').style.opacity='.42';}
+ if(/香气|香味|芳香|aroma/i.test(question)){makeBurst();rim.intensity=29;}
  if(/三年|产地|云南|山头/.test(lower)){document.querySelector('#stage').classList.add('origin-warm');}
 }
 const localKnowledge=[
@@ -362,7 +374,7 @@ async function askCoffee(question){
    answer=item?.answer||'可以从烘焙度、选豆标准或冲煮方式聊起。当前是演示知识库，接入品牌真实知识库 API 后，回答即可使用真实资料。';
    apiNote.textContent='知识库：内置演示知识（尚未连接真实 API）';
   }
-  typeAnswer(pending,answer);setRoastFromText(answer);
+  typeAnswer(pending,answer,q);setRoastFromText(answer);
  }catch(err){pending.textContent='暂时无法读取知识库：'+err.message+'。请检查 API 地址、跨域设置和服务状态。';apiNote.textContent='知识库 API 连接异常';}
 }
 document.querySelectorAll('.quick').forEach(btn=>btn.addEventListener('click',()=>askCoffee(btn.dataset.question)));
@@ -375,13 +387,14 @@ camera.position.set(0,0,8.5);
 const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
-scene.fog=new THREE.FogExp2(0x160b06,.035);
-scene.add(new THREE.HemisphereLight(0xd9c2a2,0x100704,1.05));
-// Large soft studio key and narrow rim light create believable roast-skin highlights.
-const key=new THREE.DirectionalLight(0xffd8ae,3.1);key.position.set(-3.5,4.5,5);scene.add(key);
-const rim=new THREE.PointLight(0xd17a3d,19,13);rim.position.set(2.8,1.4,-1.5);scene.add(rim);
-const fill=new THREE.PointLight(0xf2d5b0,5,10);fill.position.set(-3,-2,4);scene.add(fill);
-const topLight=new THREE.SpotLight(0xffc982,26,12,Math.PI/5,.75,1.5);topLight.position.set(0,4,3);topLight.target.position.set(0,0,0);scene.add(topLight,topLight.target);
+scene.fog=new THREE.FogExp2(0x090503,.052);
+// Two motivated studio lights: upper-left key and restrained warm lower-right rim.
+const key=new THREE.DirectionalLight(0xffd8ae,4.2);key.position.set(-4.2,5.2,4.5);scene.add(key);
+const rim=new THREE.PointLight(0xff6b2b,25,12);rim.position.set(2.8,-1.1,-2.2);scene.add(rim);
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const ssaoPass=new SSAOPass(scene,camera,innerWidth,innerHeight);ssaoPass.kernelRadius=12;ssaoPass.minDistance=.002;ssaoPass.maxDistance=.12;composer.addPass(ssaoPass);
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.72,.55,.78));
+const chromaticPass=new ShaderPass({uniforms:{tDiffuse:{value:null},amount:{value:.00042},resolution:{value:new THREE.Vector2(innerWidth,innerHeight)}},vertexShader:'varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'uniform sampler2D tDiffuse;uniform float amount;uniform vec2 resolution;varying vec2 vUv;void main(){vec2 d=(vUv-.5)*amount;vec4 c;c.r=texture2D(tDiffuse,vUv+d).r;c.g=texture2D(tDiffuse,vUv).g;c.b=texture2D(tDiffuse,vUv-d).b;c.a=texture2D(tDiffuse,vUv).a;gl_FragColor=c;}' });composer.addPass(chromaticPass);
 const beanRoot=new THREE.Group();scene.add(beanRoot);
 // One continuous, asymmetrical bean shell. The center cleft is sculpted into the surface,
 // rather than making the bean from two overlapping balls.
@@ -391,10 +404,13 @@ const skinGradient=skinCtx.createLinearGradient(0,0,256,256);skinGradient.addCol
 skinCtx.fillStyle=skinGradient;skinCtx.fillRect(0,0,256,256);
 for(let i=0;i<1500;i++){const x=Math.random()*256,y=Math.random()*256;skinCtx.fillStyle=Math.random()>.5?'#2c1b13':'#f3d7b0';skinCtx.globalAlpha=.035+Math.random()*.12;skinCtx.beginPath();skinCtx.ellipse(x,y,.35+Math.random()*1.2,.25+Math.random()*.65,Math.random(),0,Math.PI*2);skinCtx.fill();}
 skinCtx.globalAlpha=1;
-const skinTexture=new THREE.CanvasTexture(skinCanvas);skinTexture.wrapS=skinTexture.wrapT=THREE.RepeatWrapping;skinTexture.repeat.set(1.1,1.25);
-const beanMaterial=new THREE.MeshPhysicalMaterial({color:0x663018,roughness:.43,metalness:0,clearcoat:.22,clearcoatRoughness:.42,bumpMap:skinTexture,bumpScale:.014});
+const skinTexture=new THREE.CanvasTexture(skinCanvas);skinTexture.colorSpace=THREE.SRGBColorSpace;skinTexture.wrapS=skinTexture.wrapT=THREE.RepeatWrapping;skinTexture.repeat.set(1.1,1.25);
+// Procedural micro-normal, roughness and AO maps add non-uniform roasted-skin response.
+function makeDetailMap(kind){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d'),im=x.createImageData(256,256);for(let yy=0;yy<256;yy++){for(let xx=0;xx<256;xx++){const i=(yy*256+xx)*4,n=Math.random();let v;if(kind==='normal'){v=118+n*26+Math.sin(xx*.24+Math.sin(yy*.09)*3)*18;im.data[i]=v;im.data[i+1]=120+Math.cos(yy*.22+Math.sin(xx*.08)*2)*17;im.data[i+2]=245;}else{v=kind==='rough'?105+n*115:225-n*28;im.data[i]=im.data[i+1]=im.data[i+2]=v;}im.data[i+3]=255;}}x.putImageData(im,0,0);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1.1,1.25);return t;}
+const normalTexture=makeDetailMap('normal'),roughnessTexture=makeDetailMap('rough'),aoTexture=makeDetailMap('ao');
+const beanMaterial=new THREE.MeshStandardMaterial({color:0x663018,map:skinTexture,normalMap:normalTexture,normalScale:new THREE.Vector2(.28,.28),roughnessMap:roughnessTexture,roughness:.56,metalness:0,aoMap:aoTexture,aoMapIntensity:1.45});
 const grooveMaterial=new THREE.MeshStandardMaterial({color:0x1b0905,roughness:.7});
-const beanGeo=new THREE.SphereGeometry(1,128,96),p=beanGeo.attributes.position;
+const beanGeo=new THREE.SphereGeometry(1,128,96);beanGeo.setAttribute('uv2',new THREE.BufferAttribute(beanGeo.attributes.uv.array,2));const p=beanGeo.attributes.position;
 for(let i=0;i<p.count;i++){
  const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
  const taper=1-.25*Math.pow(Math.abs(y),2.2);
@@ -427,8 +443,9 @@ for(let i=0;i<srcPos.count;i+=3){
 function buildShell(side){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(splitBuckets[side],3));g.setAttribute('normal',new THREE.Float32BufferAttribute(splitNormals[side],3));g.setAttribute('uv',new THREE.Float32BufferAttribute(splitUvs[side],2));const m=new THREE.Mesh(g,beanMaterial);m.visible=false;beanRoot.add(m);return m;}
 const shellLeft=buildShell(0),shellRight=buildShell(1);
 let shellSplitActive=false;
-const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.42,48,32),new THREE.MeshBasicMaterial({color:0xd77a37,transparent:true,opacity:.035,side:THREE.BackSide,depthWrite:false}));
+const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.42,48,32),new THREE.MeshBasicMaterial({color:0xff6a25,transparent:true,opacity:.035,side:THREE.BackSide,depthWrite:false}));
 beanRoot.add(beanGlow);
+const singularity=new THREE.Mesh(new THREE.SphereGeometry(.075,32,24),new THREE.MeshBasicMaterial({color:0xfff1c9,transparent:true,opacity:0}));singularity.position.set(0,0,.16);beanRoot.add(singularity);const singularityLight=new THREE.PointLight(0xffc16b,0,4);singularityLight.position.set(0,0,.28);beanRoot.add(singularityLight);
 beanRoot.rotation.set(-.12,.12,-.28);
 function fitBeanForViewport(){
  const mobile=innerWidth<=850;
@@ -483,14 +500,15 @@ function trigger(){
  const now=performance.now();if(bursting||now-lastTrigger<120)return;lastTrigger=now;
  bursting=true;burstStart=clock.getElapsedTime();stage.classList.remove('burst');void stage.offsetWidth;stage.classList.add('burst');
  makeBurst();crackSound();statusText.textContent='AROMA RELEASED';triggerButton.textContent='✦  REFORMING AROMA';
- beanMesh.visible=false;seam.visible=false;shellLeft.visible=true;shellRight.visible=true;shellSplitActive=true;
+ beanMesh.visible=false;seam.visible=false;shellLeft.visible=true;shellRight.visible=true;shellSplitActive=true;releaseShellBodies();singularity.material.opacity=1;singularity.scale.setScalar(.2);singularityLight.intensity=30;
+ if(window.gsap){gsap.to(singularity.scale,{x:1,y:1,z:1,duration:.42,ease:'elastic.out(1,.55)'});gsap.to(singularityLight,{intensity:7,duration:1.4,delay:.2,ease:'power2.out'});}
  if(window.gsap){
   gsap.fromTo('#flash',{opacity:0},{opacity:1,duration:.18,yoyo:true,repeat:1,ease:'power2.out'});
   gsap.fromTo('.heat-haze',{scale:1,opacity:.18},{scale:1.34,opacity:.58,duration:.9,yoyo:true,repeat:1,ease:'sine.inOut'});
-  gsap.to(shellLeft.position,{x:-.34,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
-  gsap.to(shellRight.position,{x:.34,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
-  gsap.to(shellLeft.rotation,{z:-.12,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
-  gsap.to(shellRight.rotation,{z:.12,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
+  gsap.to(shellLeft.position,{x:0,y:0,z:0,duration:.82,delay:.58,ease:'back.inOut(1.35)'});
+  gsap.to(shellRight.position,{x:0,y:0,z:0,duration:.82,delay:.58,ease:'back.inOut(1.35)'});
+  gsap.to(shellLeft.rotation,{x:0,y:0,z:0,duration:.82,delay:.58,ease:'power3.inOut'});
+  gsap.to(shellRight.rotation,{x:0,y:0,z:0,duration:.82,delay:.58,ease:'power3.inOut'});
  }
 }
 triggerButton.addEventListener('click',trigger);
@@ -502,6 +520,9 @@ window.addEventListener('keydown',e=>{
 });
 muteButton.addEventListener('click',()=>{muted=!muted;muteButton.textContent=muted?'♪ SOUND OFF':'♪ SOUND ON';muteButton.setAttribute('aria-pressed',String(muted));});
 const clock=new THREE.Clock();
+const physicsWorld=new CANNON.World({gravity:new CANNON.Vec3(0,-2.6,0)});physicsWorld.allowSleep=true;
+let shellBodyLeft=null,shellBodyRight=null;
+function releaseShellBodies(){for(const body of [shellBodyLeft,shellBodyRight])if(body)physicsWorld.removeBody(body);shellBodyLeft=new CANNON.Body({mass:.55,shape:new CANNON.Sphere(.42),position:new CANNON.Vec3(-.01,0,0),linearDamping:.42,angularDamping:.55});shellBodyRight=new CANNON.Body({mass:.55,shape:new CANNON.Sphere(.42),position:new CANNON.Vec3(.01,0,0),linearDamping:.42,angularDamping:.55});physicsWorld.addBody(shellBodyLeft);physicsWorld.addBody(shellBodyRight);shellBodyLeft.applyImpulse(new CANNON.Vec3(-1.5,.9,.12),shellBodyLeft.position);shellBodyRight.applyImpulse(new CANNON.Vec3(1.5,1.05,-.1),shellBodyRight.position);}
 
 // Pointer parallax: the hero object, light field and dust respond with different inertia.
 let pointerX=0,pointerY=0,parallaxX=0,parallaxY=0;
@@ -512,11 +533,12 @@ function animate(){
  if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.34;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.08;beanRoot.rotation.z=-.28+Math.sin(t*.24)*.035;}
  if(bursting){
   const p=Math.min(2.1,(t-burstStart));const pulse=Math.sin(Math.min(1,p/.8)*Math.PI);
+  if(p<.48&&shellBodyLeft&&shellBodyRight){physicsWorld.step(1/60);const ql=shellBodyLeft.quaternion.toEuler(),qr=shellBodyRight.quaternion.toEuler();shellLeft.position.set(shellBodyLeft.position.x,shellBodyLeft.position.y,shellBodyLeft.position.z);shellRight.position.set(shellBodyRight.position.x,shellBodyRight.position.y,shellBodyRight.position.z);shellLeft.rotation.set(ql.x,ql.y,ql.z);shellRight.rotation.set(qr.x,qr.y,qr.z);}
   const mobile=innerWidth<=850;
   const baseX=mobile?1.0:1.24,baseY=mobile?1.17:1.48,baseZ=mobile?1.0:1.18;
   const swell=1+pulse*.075;
   beanRoot.scale.set(baseX*swell,baseY*swell,baseZ*swell);beanGlow.material.opacity=.035+.12*pulse;
-  if(p>=2.1){bursting=false;fitBeanForViewport();beanGlow.material.opacity=.035;beanMesh.visible=true;seam.visible=true;shellLeft.visible=false;shellRight.visible=false;shellLeft.position.set(0,0,0);shellRight.position.set(0,0,0);shellLeft.rotation.set(0,0,0);shellRight.rotation.set(0,0,0);shellSplitActive=false;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
+  if(p>=2.1){bursting=false;fitBeanForViewport();beanGlow.material.opacity=.035;singularity.material.opacity=0;singularityLight.intensity=0;beanMesh.visible=true;seam.visible=true;shellLeft.visible=false;shellRight.visible=false;for(const body of [shellBodyLeft,shellBodyRight])if(body)physicsWorld.removeBody(body);shellBodyLeft=shellBodyRight=null;shellLeft.position.set(0,0,0);shellRight.position.set(0,0,0);shellLeft.rotation.set(0,0,0);shellRight.rotation.set(0,0,0);shellSplitActive=false;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
  }
  if(particles){
   const geo=particles.geometry,arr=geo.attributes.position.array,vel=geo.userData.vel,life=geo.userData.life,age=t-geo.userData.origin;
@@ -531,13 +553,14 @@ function animate(){
   if(age>2.1){scene.remove(smokeParticles);smokeParticles.geometry.dispose();smokeParticles.material.dispose();smokeParticles=null;}
  }
  parallaxX+=(pointerX-parallaxX)*.025;parallaxY+=(pointerY-parallaxY)*.025;
+ document.querySelector('.volume-beam').style.translate=(parallaxX*-18)+'px '+(parallaxY*-10)+'px';document.querySelector('.heat-haze').style.translate=(parallaxX*11)+'px '+(parallaxY*7)+'px';key.position.x=-4.2+parallaxX*.7;rim.position.x=2.8+parallaxX*.45;
  if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.23+parallaxX*.13;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.055-parallaxY*.08;}
  const d=dustGeo.attributes.position.array;for(let i=0;i<dustCount;i++){d[i*3+1]+=.0018+(i%5)*.00015;if(d[i*3+1]>3.2)d[i*3+1]=-3.2;d[i*3]+=(Math.sin(t*.4+i)*.0003)+parallaxX*.0008;d[i*3+2]+=(-parallaxY*.0008-d[i*3+2])*.01;}
  dustGeo.attributes.position.needsUpdate=true;
- renderer.render(scene,camera);
+ composer.render();
 }
 animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);fitBeanForViewport();});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);ssaoPass.setSize(innerWidth,innerHeight);chromaticPass.uniforms.resolution.value.set(innerWidth,innerHeight);fitBeanForViewport();});
 </script>
 </body>
 </html>
