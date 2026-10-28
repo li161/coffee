@@ -93,6 +93,38 @@ button,input{font:inherit}button{cursor:pointer}
 .stage .bottle-wrap .label .seal{font-size:7px}.stage .bottle-wrap .label .vintage{font-size:8px}
 @media(max-width:800px){.stage .bottle-wrap{height:clamp(210px,31vh,280px);width:clamp(90px,21vw,130px)}.stage .bottle-wrap.is-center .label strong{font-size:15px}.stage .bottle-wrap .label strong{font-size:11px}}
 
+
+/* Side merchandise props and interactive corkscrew */
+.accessories{position:absolute;inset:0;z-index:1;pointer-events:none;transform-style:preserve-3d}
+.accessory{position:absolute;pointer-events:auto;border:1px solid #e4c48b22;background:linear-gradient(145deg,#ffffff0b,#12080730);backdrop-filter:blur(5px);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:#d8bc94;font-size:9px;letter-spacing:.08em;cursor:pointer;transition:transform .35s,border-color .3s,background .3s,box-shadow .3s;box-shadow:0 18px 40px #0003}
+.accessory:hover,.accessory.selected{border-color:#e3c18488;background:#c79a5c16;box-shadow:0 0 30px #d4a75b16,0 18px 40px #0005}
+.accessory .art{position:relative;display:block;width:60px;height:70px}
+.acc-glass{left:4%;top:29%;width:112px;height:150px;transform:rotate(-7deg)}
+.acc-grapes{right:4%;top:25%;width:112px;height:135px;transform:rotate(8deg)}
+.acc-cheese{left:9%;bottom:7%;width:116px;height:100px;transform:rotate(5deg)}
+.acc-decanter{right:8%;bottom:7%;width:118px;height:132px;transform:rotate(-5deg)}
+.wine-glass{position:absolute;left:15px;top:2px;width:38px;height:47px;border:1.5px solid #e7d5b4aa;border-top:0;border-radius:5px 5px 20px 20px;background:linear-gradient(180deg,#ffffff09 15%,#a8324d65 16%,#6f1f33aa 80%,#ffffff0b);box-shadow:inset 5px 0 6px #fff2}
+.wine-glass:before{content:"";position:absolute;left:17px;top:46px;height:18px;width:1px;background:#e7d5b4aa}.wine-glass:after{content:"";position:absolute;left:6px;top:63px;width:24px;height:2px;border-radius:50%;background:#e7d5b4aa}
+.grape-cluster{position:absolute;left:9px;top:6px;width:45px;height:54px}
+.grape-cluster i{position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#a66b8a,#552342 70%,#28101f);box-shadow:inset -3px -3px 4px #18081780}
+.grape-cluster i:nth-child(1){left:13px;top:0}.grape-cluster i:nth-child(2){left:1px;top:12px}.grape-cluster i:nth-child(3){left:17px;top:13px}.grape-cluster i:nth-child(4){left:29px;top:12px}.grape-cluster i:nth-child(5){left:8px;top:27px}.grape-cluster i:nth-child(6){left:23px;top:28px}.grape-cluster i:nth-child(7){left:16px;top:41px}.grape-cluster:before{content:"";position:absolute;left:21px;top:-8px;width:15px;height:12px;border-top:2px solid #8b9a5a;border-radius:50%;transform:rotate(-28deg)}
+.cheese-wedge{position:absolute;left:6px;top:12px;width:52px;height:38px;background:linear-gradient(145deg,#ffe8a0,#d9a64d);clip-path:polygon(0 20%,100% 0,78% 100%);filter:drop-shadow(0 7px 5px #0006)}
+.cheese-wedge:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 25% 40%,#9f6c2933 2px,transparent 3px),radial-gradient(circle at 55% 58%,#9f6c2933 2px,transparent 3px),radial-gradient(circle at 72% 27%,#9f6c2933 2px,transparent 3px)}
+.decanter-shape{position:absolute;left:9px;top:3px;width:46px;height:59px;border:1.5px solid #e5d0ab99;border-radius:45% 45% 23% 23% / 22% 22% 16% 16%;background:linear-gradient(90deg,#ffffff08,#c3a16a38 35%,#fff2 48%,#ffffff05 100%);box-shadow:inset 5px 0 8px #fff2}
+.decanter-shape:before{content:"";position:absolute;left:16px;top:-12px;width:12px;height:16px;border:1px solid #e5d0ab99;border-bottom:0;border-radius:3px 3px 0 0;background:#b9976c66}
+.corkscrew{position:absolute;z-index:6;left:50%;top:2%;width:62px;height:86px;transform:translateX(-50%) rotate(-18deg);border:0;background:transparent;cursor:pointer;filter:drop-shadow(0 6px 7px #0006);transition:transform .35s,top .35s}
+.corkscrew:before{content:"";position:absolute;left:15px;top:0;width:32px;height:24px;border:5px solid #d7bb80;border-bottom:0;border-radius:20px 20px 0 0;box-shadow:inset 0 0 0 1px #61492b}
+.corkscrew:after{content:"";position:absolute;left:28px;top:23px;width:6px;height:39px;border-radius:4px;background:linear-gradient(90deg,#6b4a2a,#e2c88d,#6b4a2a);box-shadow:0 0 0 1px #e2c88d33}
+.corkscrew .spiral{position:absolute;left:27px;top:53px;width:8px;height:26px;border:2px solid #d8bd83;border-top:0;border-radius:0 0 6px 6px}
+.corkscrew .spiral:after{content:"";position:absolute;left:0;top:5px;width:4px;height:12px;border-right:2px solid #d8bd83}
+.corkscrew:hover{transform:translateX(-50%) rotate(0deg) scale(1.06)}
+.corkscrew[aria-pressed="true"]{top:-1%;transform:translateX(-50%) rotate(18deg);filter:drop-shadow(0 0 15px #d8b36c88)}
+.corkscrew[aria-pressed="true"] .spiral{animation:twist 1s ease-in-out}
+@keyframes twist{50%{transform:rotate(180deg) translateY(3px)}}
+.bottle-wrap.opened .capsule{transform:translateY(-24px) rotate(9deg);opacity:.35;transition:transform .5s,opacity .5s}
+.bottle-wrap.opened:after{content:"";position:absolute;top:-3%;left:44%;width:12%;height:5%;border-radius:4px;background:linear-gradient(90deg,#6b4828,#d8bd83,#8b6840);transform:translateY(-18px) rotate(12deg);box-shadow:0 5px 10px #0005}
+@media(max-width:800px){.acc-glass{left:1%;top:27%;transform:scale(.72) rotate(-7deg);transform-origin:left center}.acc-grapes{right:0;top:24%;transform:scale(.72) rotate(8deg);transform-origin:right center}.acc-cheese{left:0;bottom:2%;transform:scale(.7) rotate(5deg);transform-origin:left bottom}.acc-decanter{right:0;bottom:2%;transform:scale(.7) rotate(-5deg);transform-origin:right bottom}.corkscrew{top:0;transform:translateX(-50%) rotate(-18deg) scale(.8)}}
+
 </style>
 </head>
 <body>
@@ -101,6 +133,13 @@ button,input{font:inherit}button{cursor:pointer}
  <section class="product" aria-label="葡萄酒样品">
   <div class="stage" id="stage">
    <div class="glow"></div><div class="reflection"></div>
+   <div class="accessories" aria-label="搭配商品">
+    <button class="accessory acc-glass" data-addon="酒杯" aria-label="选择水晶酒杯"><span class="art"><i class="wine-glass"></i></span><span>水晶酒杯</span></button>
+    <button class="accessory acc-grapes" data-addon="葡萄" aria-label="选择葡萄"><span class="art"><span class="grape-cluster"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span><span>当季葡萄</span></button>
+    <button class="accessory acc-cheese" data-addon="奶酪" aria-label="选择奶酪"><span class="art"><i class="cheese-wedge"></i></span><span>熟成奶酪</span></button>
+    <button class="accessory acc-decanter" data-addon="醒酒器" aria-label="选择醒酒器"><span class="art"><i class="decanter-shape"></i></span><span>水晶醒酒器</span></button>
+   </div>
+   <button class="corkscrew" id="corkscrew" aria-label="点击使用开瓶器" aria-pressed="false" title="点击开瓶 / 再次点击复位"><span class="spiral"></span></button>
    <div class="bottle-wrap" id="bottleWrap" aria-label="可拖动查看的葡萄酒瓶">
     <div class="bottle">
      <div class="capsule"></div><div class="neck"></div><div class="shoulders"></div>
@@ -159,6 +198,8 @@ function answer(q){const w=wines[current],s=q.toLowerCase();if(/搭配|搭餐|�
 $('chatForm').addEventListener('submit',e=>{e.preventDefault();const input=$('chatInput'),q=input.value.trim();if(!q)return;addMessage('','你：',q,true);input.value='';const reply=answer(q);setTimeout(()=>{const m=reply.indexOf('：'),name=reply.slice(0,m),body=reply.slice(m+1).trim(),r=reply.startsWith('路易')?roles.grower:reply.startsWith('米娅')?roles.chef:roles.sommelier;addMessage(r.face,name,body)},220)});
 document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('click',()=>{$('chatInput').value=b.dataset.question;$('chatForm').requestSubmit()}));
 document.querySelectorAll('.member').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.member').forEach(x=>x.classList.toggle('active',x===b));role=b.dataset.role;const r=roles[role];addMessage(r.face,r.name,role==='sommelier'?'我来帮你拆解酒款风味、口感与品鉴方法。':role==='grower'?'我来聊聊葡萄品种、产区风土和年份差异。':'我来从食材、烹饪方式和味道平衡给你搭餐建议。')}));
+document.querySelectorAll('[data-addon]').forEach(btn=>btn.addEventListener('click',()=>{btn.classList.toggle('selected');const name=btn.dataset.addon;showToast((btn.classList.contains('selected')?'已选配':'已取消')+'：'+name);addMessage('🍷','薇诺 · 侍酒师',(btn.classList.contains('selected')?'我已为你选中':'已移除')+'「'+name+'」。你可以继续选择搭配商品，当前仍是演示选择，不会真实下单。')}));
+$('corkscrew').addEventListener('click',()=>{const tool=$('corkscrew'),b=$('bottleWrap'),opened=tool.getAttribute('aria-pressed')!=='true';tool.setAttribute('aria-pressed',String(opened));b.classList.toggle('opened',opened);showToast(opened?'开瓶器已旋入：酒瓶已开启演示':'已复位开瓶器');addMessage('🍷','薇诺 · 侍酒师',opened?'开瓶动作完成。实际开瓶器是交互演示，酒瓶没有真实物理模拟。':'开瓶器已复位，可以再次操作。')});
 $('orderBtn').addEventListener('click',()=>{ordered++;const w=wines[current];$('orderBtn').classList.add('done');$('orderBtn').textContent='已加入订单 · ¥ '+w.price;showToast('已将「'+w.name+'」加入体验订单 · ¥ '+w.price);addMessage('🍷','薇诺 · 侍酒师','已为你记下这次体验订单：'+w.name+'，¥'+w.price+'。这是前端交互演示，尚未创建真实订单或发起支付。');setTimeout(()=>{if(current===wines.indexOf(w)){$('orderBtn').classList.remove('done');$('orderBtn').textContent='继续下单 · ¥ '+w.price}},1800)});
 function showToast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400)}
 
