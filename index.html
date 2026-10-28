@@ -33,6 +33,20 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px
 @keyframes flash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
 @media(max-width:600px){.brand{top:25px}.sub{max-width:220px;line-height:1.7}#mute{top:85px}.bottom{bottom:36px}#status{display:none}}
 @media(prefers-reduced-motion:reduce){#trigger{transition:none}}
+
+/* Knowledge-driven roast assistant */
+#stage{padding-right:0}
+#assistant{position:absolute;z-index:5;right:clamp(16px,2.8vw,42px);top:50%;transform:translateY(-50%);width:min(350px,31vw);max-height:min(690px,82vh);display:flex;flex-direction:column;gap:14px;padding:18px;border:1px solid rgba(235,192,140,.2);border-radius:22px;background:rgba(22,12,9,.66);backdrop-filter:blur(22px);box-shadow:0 20px 80px #0005;color:#f4e3d0}
+.assistant-head{display:flex;align-items:center;gap:12px}.avatar{width:54px;height:54px;flex:0 0 54px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#f3d4a4,#93603d 52%,#392016);border:1px solid #d8b17d66;font-size:25px;box-shadow:0 0 24px #b97b3b22}.assistant-name{font-size:13px;letter-spacing:.08em}.assistant-role{font-size:10px;color:#b99b7e;margin-top:5px}.live-pill{margin-left:auto;border:1px solid #8cbb9566;color:#b4d7ac;border-radius:999px;padding:5px 8px;font-size:9px;white-space:nowrap}
+#chatLog{overflow:auto;min-height:110px;max-height:34vh;display:flex;flex-direction:column;gap:10px;padding:4px 2px;scrollbar-width:thin;scrollbar-color:#80593d transparent}
+.bubble{font-size:12px;line-height:1.75;padding:11px 12px;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.bot{background:#ffffff0b;border:1px solid #ffffff0d;border-top-left-radius:4px;color:#e8d4bd}.bubble.user{align-self:flex-end;background:#8b583a33;border:1px solid #c08a5b44;border-top-right-radius:4px;color:#f8e8d5;max-width:92%}
+.quick-label{font-size:9px;letter-spacing:.18em;color:#b99b7e;margin:2px 0 0}.quick-list{display:flex;flex-direction:column;gap:7px}.quick{font:inherit;text-align:left;font-size:11px;line-height:1.5;color:#e5c6a5;background:#ffffff06;border:1px solid #ffffff12;border-radius:10px;padding:9px 11px;cursor:pointer;transition:.2s}.quick:hover{background:#a56b4130;border-color:#d8a46b77}
+#chatForm{display:flex;gap:7px;border:1px solid #d8b17d44;border-radius:12px;padding:5px;background:#10090666}#chatInput{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#fff0dc;font:inherit;font-size:12px;padding:9px}#chatInput::placeholder{color:#9d8067}#sendChat{border:0;border-radius:9px;background:#b77b49;color:#1b0e08;padding:0 13px;cursor:pointer;font-size:12px}
+.roast-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:10px;color:#bd9d7e}.roast-chip{border:1px solid #ffffff18;border-radius:999px;padding:5px 8px;color:#d6b99b}.roast-chip.active{background:#b77b4933;border-color:#d6a16a;color:#ffe0b5}
+#apiNote{font-size:9px;line-height:1.5;color:#92775f}
+@media(max-width:850px){#assistant{right:12px;top:auto;bottom:95px;transform:none;width:min(330px,calc(100vw - 24px));max-height:48vh;padding:12px;gap:9px}.avatar{width:40px;height:40px;flex-basis:40px}.assistant-head{gap:9px}#chatLog{max-height:13vh;min-height:64px}.quick-list{display:none}.hud{max-width:48vw}h1{font-size:clamp(22px,5vw,36px)}.brand{display:none}#mute{right:auto;left:22px;top:auto;bottom:28px}}
+@media(max-width:480px){.hud{top:20px;left:20px;max-width:58vw}.eyebrow{font-size:8px}h1{font-size:22px}.sub{font-size:10px}#assistant{bottom:85px;max-height:47vh}.bottom{bottom:20px;left:22px;transform:none;width:auto;align-items:flex-start}.hint{display:none}#trigger{padding:10px 14px;font-size:9px}#chatLog{max-height:10vh}}
+
 </style>
 </head>
 <body>
@@ -42,6 +56,17 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px
 <div class="brand"><b>AROMA STUDIO</b>LIVE VISUAL EFFECTS / 003</div>
 <button id="mute" type="button" aria-pressed="false">♪ SOUND ON</button>
 <div class="bottom"><button id="trigger" type="button">✦ &nbsp; CRACK THE BEAN</button><div class="hint">口播到「新鲜烘焙」时触发 &nbsp; <kbd>SPACE</kbd> 或点击按钮</div></div>
+
+<aside id="assistant" aria-label="咖啡烘焙数字人问答">
+  <div class="assistant-head"><div class="avatar" aria-hidden="true">☕</div><div><div class="assistant-name">阿焙 · 咖啡顾问</div><div class="assistant-role">烘焙理念 / 选豆知识 / 冲煮建议</div></div><span class="live-pill">● KNOWLEDGE</span></div>
+  <div class="roast-row">当前烘焙 <span id="roastChip" class="roast-chip active">中烘 · 坚果可可</span></div>
+  <div id="chatLog" aria-live="polite"><div class="bubble bot">你好，我是阿焙。点一下咖啡豆，看看香气如何绽放；也可以问我烘焙度、选豆标准或冲煮方式。</div></div>
+  <div class="quick-label">ASK THE ROASTER / 快捷提问</div>
+  <div class="quick-list"><button class="quick" data-question="这豆子什么烘焙度？">这豆子什么烘焙度？</button><button class="quick" data-question="创始人的选豆标准是什么？">创始人的选豆标准是什么？</button><button class="quick" data-question="适合手冲还是意式？">适合手冲还是意式？</button></div>
+  <form id="chatForm"><input id="chatInput" autocomplete="off" placeholder="问问烘焙师…" aria-label="输入咖啡问题"><button id="sendChat" type="submit">发送</button></form>
+  <div id="apiNote">知识库：内置演示知识 · 可配置外部 API</div>
+</aside>
+
 <div id="status"><span class="dot"></span><span id="statusText">READY FOR CUE</span></div>
 </main>
 <script type="module">
@@ -50,6 +75,56 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.m
 const stage=document.querySelector('#stage'), canvas=document.querySelector('#scene');
 const triggerButton=document.querySelector('#trigger'), muteButton=document.querySelector('#mute'), statusText=document.querySelector('#statusText');
 let muted=false, bursting=false, burstStart=0, lastTrigger=0;
+
+/* Chat answers can be powered by a knowledge API. Set window.COFFEE_KNOWLEDGE_API to your endpoint.
+   Supported response shapes: {answer:"..."}, {response:"..."}, or OpenAI-style {choices:[{message:{content:"..."}}]}.
+   The API URL is intentionally unset until the project owner supplies an endpoint/key strategy. */
+const chatLog=document.querySelector('#chatLog'), chatForm=document.querySelector('#chatForm'), chatInput=document.querySelector('#chatInput');
+const roastChip=document.querySelector('#roastChip'), apiNote=document.querySelector('#apiNote');
+let targetBeanColor=new THREE.Color(0x512311), currentRoast='中烘';
+const roastColors={light:new THREE.Color(0x9b6134),medium:new THREE.Color(0x512311),dark:new THREE.Color(0x24100b)};
+function setRoastFromText(text){
+ const s=String(text||'');
+ let key='medium',label='中烘 · 坚果可可';
+ if(/浅烘|浅焙|light roast|cinnamon roast/i.test(s)){key='light';label='浅烘 · 柑橘花香';currentRoast='浅烘';}
+ else if(/深烘|深焙|重烘|dark roast|french roast|意式深烘/i.test(s)){key='dark';label='深烘 · 黑巧克力';currentRoast='深烘';}
+ else if(/中烘|中焙|medium roast|city roast/i.test(s)){key='medium';label='中烘 · 坚果可可';currentRoast='中烘';}
+ else return;
+ if(key==='light')currentRoast='浅烘';if(key==='medium')currentRoast='中烘';if(key==='dark')currentRoast='深烘';
+ targetBeanColor.copy(roastColors[key]);roastChip.textContent=label;
+ roastChip.classList.add('active');
+}
+function addBubble(text,who='bot'){const el=document.createElement('div');el.className='bubble '+who;el.textContent=text;chatLog.appendChild(el);chatLog.scrollTop=chatLog.scrollHeight;return el;}
+const localKnowledge=[
+ {test:/烘焙度|烘焙程度|浅烘|中烘|深烘/,answer:'这是一款中烘风格的演示豆。中烘在甜感、酸质与醇厚度之间取得平衡，常能呈现坚果、焦糖和可可风味。实际烘焙度以豆袋标注与烘焙记录为准。'},
+ {test:/创始人|选豆|标准|产地|豆子怎么选/,answer:'选豆通常看四点：产区与品种是否可追溯、生豆含水率与瑕疵率、杯测中的干净度和甜感，以及风味是否符合产品定位。我们会优先考虑批次稳定、来源透明、风味表达清晰的咖啡豆。此处为演示知识，需替换为品牌真实选豆标准。'},
+ {test:/手冲|意式|冲煮|适合/,answer:'中烘通常比较百搭：手冲能呈现坚果、焦糖与平衡酸甜；意式则容易获得巧克力感和较扎实的口感。具体还要结合豆种、烘焙曲线、养豆天数与配方调整。'},
+ {test:/创始人|理念|为什么|烘焙/,answer:'烘焙不是把豆子烤得越深越好，而是根据生豆密度、含水率和目标风味设计热量与发展时间，尽量保留产区个性，同时建立甜感、平衡与稳定性。此回答为演示文案，可接入品牌知识库。'}
+];
+async function askCoffee(question){
+ const q=String(question||'').trim();if(!q)return;
+ addBubble(q,'user');chatInput.value='';
+ const pending=addBubble('让我查一下烘焙笔记…','bot');
+ try{
+  let answer='';
+  const endpoint=window.COFFEE_KNOWLEDGE_API;
+  if(endpoint){
+   const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,query:q,source:'coffee-bean-demo'})});
+   if(!response.ok)throw new Error('知识库 API 返回 '+response.status);
+   const data=await response.json();answer=data.answer||data.response||data.output_text||data.choices?.[0]?.message?.content||'知识库暂时没有返回可显示的答案。';
+   apiNote.textContent='知识库：外部 API 已响应';
+  }else{
+   const item=localKnowledge.find(x=>x.test.test(q));
+   answer=item?.answer||'可以从烘焙度、选豆标准或冲煮方式聊起。当前是演示知识库，接入品牌真实知识库 API 后，回答即可使用真实资料。';
+   apiNote.textContent='知识库：内置演示知识（尚未连接真实 API）';
+  }
+  pending.textContent=answer;setRoastFromText(answer);
+ }catch(err){pending.textContent='暂时无法读取知识库：'+err.message+'。请检查 API 地址、跨域设置和服务状态。';apiNote.textContent='知识库 API 连接异常';}
+}
+document.querySelectorAll('.quick').forEach(btn=>btn.addEventListener('click',()=>askCoffee(btn.dataset.question)));
+chatForm.addEventListener('submit',e=>{e.preventDefault();askCoffee(chatInput.value);});
+canvas.addEventListener('click',()=>trigger());
+
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,.1,100);
 camera.position.set(0,0,8.5);
@@ -139,6 +214,7 @@ muteButton.addEventListener('click',()=>{muted=!muted;muteButton.textContent=mut
 const clock=new THREE.Clock();
 function animate(){
  requestAnimationFrame(animate);const t=clock.getElapsedTime();
+ beanMaterial.color.lerp(targetBeanColor,0.025);
  if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.34;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.08;beanRoot.rotation.z=-.28+Math.sin(t*.24)*.035;}
  if(bursting){
   const p=Math.min(1,(t-burstStart));const ease=p<.5?1-Math.pow(1-p*2,3):Math.pow((p-.5)*2,3);
