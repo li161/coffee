@@ -139,8 +139,8 @@ button,input{font:inherit}button{cursor:pointer}
 .stage{width:100%;height:100%;min-height:0;position:relative;overflow:visible;perspective:1500px;transform-style:preserve-3d}
 .stage .bottle-wrap{left:50%;top:44%;width:clamp(105px,12vw,155px);height:clamp(260px,38vh,350px);transition:transform .9s cubic-bezier(.16,.8,.2,1),opacity .55s,filter .55s;animation:carouselFloat 5s ease-in-out infinite}
 .stage .bottle-wrap.is-center{transform:translate(-50%,-50%) translateZ(110px) scale(1.08)!important}
-.stage .bottle-wrap.is-right{transform:translate(calc(-50% + 27%),-47%) translateZ(-100px) rotateY(-25deg) scale(.72)!important}
-.stage .bottle-wrap.is-left{transform:translate(calc(-50% - 27%),-47%) translateZ(-100px) rotateY(25deg) scale(.72)!important}
+.stage .bottle-wrap.is-right{transform:translate(calc(-50% + clamp(105px, 19vw, 245px)),-47%) translateZ(-100px) rotateY(-25deg) scale(.72)!important}
+.stage .bottle-wrap.is-left{transform:translate(calc(-50% - clamp(105px, 19vw, 245px)),-47%) translateZ(-100px) rotateY(25deg) scale(.72)!important}
 .stage .bottle-wrap.is-left,.stage .bottle-wrap.is-right{opacity:.95;z-index:8;pointer-events:auto}
 .product-info{position:relative;z-index:12;text-align:center;padding:8px 12px 0;min-height:0}
 .product-info .kicker{font-size:clamp(9px,1vw,12px);letter-spacing:.24em;margin-bottom:8px}
@@ -152,8 +152,8 @@ button,input{font:inherit}button{cursor:pointer}
  .product{left:0;width:100%;height:88vh;top:49%;padding:0 8px;box-sizing:border-box}
  .stage .bottle-wrap{width:clamp(78px,20vw,118px);height:clamp(230px,34vh,300px);top:43%}
  .stage .bottle-wrap.is-center{transform:translate(-50%,-50%) translateZ(70px) scale(1.04)!important}
- .stage .bottle-wrap.is-right{transform:translate(calc(-50% + 34%),-46%) translateZ(-70px) rotateY(-20deg) scale(.7)!important}
- .stage .bottle-wrap.is-left{transform:translate(calc(-50% - 34%),-46%) translateZ(-70px) rotateY(20deg) scale(.7)!important}
+ .stage .bottle-wrap.is-right{transform:translate(calc(-50% + clamp(75px, 29vw, 145px)),-46%) translateZ(-70px) rotateY(-20deg) scale(.7)!important}
+ .stage .bottle-wrap.is-left{transform:translate(calc(-50% - clamp(75px, 29vw, 145px)),-46%) translateZ(-70px) rotateY(20deg) scale(.7)!important}
  .product-info{padding-top:0}
  .product-info h1{font-size:clamp(23px,5vw,32px)}
  .product-info p{margin-bottom:12px}
