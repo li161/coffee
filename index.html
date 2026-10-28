@@ -322,6 +322,62 @@ h1{font-size:clamp(44px,6.4vw,88px);line-height:.92;letter-spacing:-.06em}
 @media(max-width:850px){#journeyDock{left:12px;right:12px;bottom:12px;width:auto;padding:13px 13px 10px}.journey-steps{gap:3px;margin:10px 0 12px}.journey-step{padding:7px 4px}.journey-step b{font-size:10px}.journey-step small{font-size:7px;letter-spacing:0}.journey-action{grid-template-columns:1fr auto;gap:8px}.journey-action p{font-size:11px;max-width:none}.journey-controls{min-width:98px}.journey-controls button{padding:10px 11px;font-size:11px}.journey-feedback{font-size:9px}.hud{top:8%!important;left:18px!important}.hud h1{font-size:clamp(32px,9vw,54px)!important}#assistant:not(.assistant-hidden){left:12px;right:12px;bottom:225px;width:auto;max-height:45vh}}
 @media(max-width:430px){.journey-step b{font-size:9px}.journey-step small{display:none}.journey-action h2{font-size:18px}.journey-action p{max-width:210px}.journey-feedback{max-width:105px}}
 
+
+/* COFFEEVERSE drink selector: tactile, mobile-first cover-flow carousel */
+#drinkPickerToggle{border:1px solid #f1d2a65c;border-radius:999px;padding:7px 11px;background:#1d120b9c;color:#f6dfbd;font-size:10px;letter-spacing:.08em;cursor:pointer}
+#drinkPickerToggle:hover{background:#694021b8;border-color:#f2c98d}
+#drinkPicker{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at 50% 42%,#fce0b8 0%,#f6c98e 45%,#d98b48 100%);color:#713d20;opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.025);transition:opacity .35s ease,visibility .35s,transform .5s cubic-bezier(.2,.8,.2,1)}
+#drinkPicker.open{opacity:1;visibility:visible;pointer-events:auto;transform:scale(1)}
+#drinkPicker:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 38%,#fff8 0%,transparent 42%),linear-gradient(0deg,#fff0 40%,#fff4 100%)}
+.drink-picker-inner{position:relative;width:min(940px,100%);height:min(760px,100%);display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:14px}
+.drink-picker-head{width:100%;display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:.18em;color:#9a5b2c}
+.drink-picker-head strong{font:600 12px Manrope,sans-serif;letter-spacing:.22em;color:#6e3b1d}
+#drinkPickerClose{border:1px solid #a7653838;border-radius:50%;width:36px;height:36px;background:#fff4;color:#78431f;font-size:20px;cursor:pointer}
+.drink-picker-title{text-align:center;margin-top:2px}
+.drink-picker-title h2{font:italic 500 clamp(34px,6vw,66px)/1.05 "Playfair Display",serif;margin:0;color:#a85f29;letter-spacing:-.035em}
+.drink-picker-title p{margin:8px 0 0;font-size:10px;letter-spacing:.17em;color:#a56b40}
+.drink-carousel{position:relative;width:100%;height:clamp(260px,43vh,410px);display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:pan-y;user-select:none}
+.drink-card{position:absolute;left:50%;top:50%;width:clamp(150px,23vw,240px);height:clamp(235px,37vh,340px);border:1px solid #fff9;border-radius:48% 48% 24px 24px;background:linear-gradient(180deg,#fff9,#fbe4c2);box-shadow:0 20px 55px #9a5a2a24;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:18px 13px 17px;cursor:pointer;transform:translate(-50%,-50%) scale(.72);opacity:0;pointer-events:none;transition:transform .48s cubic-bezier(.2,.8,.2,1),opacity .35s,filter .35s;overflow:hidden}
+.drink-card:before{content:"";position:absolute;inset:0 0 36% 0;border-radius:50% 50% 35% 35%;background:radial-gradient(ellipse at 50% 35%,#fff9,#f9d5a0 72%,#edb774);z-index:0}
+.drink-card[data-pos="0"]{transform:translate(calc(-50% - min(31vw,280px)),-50%) scale(.76) rotate(-7deg);opacity:.65;filter:blur(.4px);pointer-events:auto}
+.drink-card[data-pos="1"]{transform:translate(-50%,-50%) scale(1);opacity:1;z-index:3;pointer-events:auto;box-shadow:0 25px 65px #9250213d}
+.drink-card[data-pos="2"]{transform:translate(calc(-50% + min(31vw,280px)),-50%) scale(.76) rotate(7deg);opacity:.65;filter:blur(.4px);pointer-events:auto}
+.drink-card[data-pos="3"],.drink-card[data-pos="4"]{opacity:0;pointer-events:none}
+.drink-cup{position:relative;z-index:1;width:clamp(82px,12vw,128px);height:clamp(122px,20vh,180px);margin:auto 0 12px;display:grid;place-items:center;filter:drop-shadow(0 15px 12px #8b542e2b);font-size:clamp(64px,10vw,100px);transition:transform .35s}
+.drink-card[data-pos="1"] .drink-cup{transform:translateY(-3px) scale(1.04)}
+.drink-name{position:relative;z-index:1;font:italic 500 23px "Playfair Display",serif;color:#a65e2c;text-align:center}
+.drink-note{position:relative;z-index:1;font-size:9px;letter-spacing:.11em;color:#a77751;margin-top:5px;text-align:center}
+.drink-picker-footer{width:min(460px,100%);text-align:center}
+#drinkSelectedName{font:italic 500 27px "Playfair Display",serif;color:#87451e;margin:0}
+#drinkSelectedNote{font-size:11px;color:#98623d;margin:7px 0 14px;line-height:1.6}
+.drink-picker-actions{display:flex;justify-content:center;align-items:center;gap:12px}
+.drink-nav{width:42px;height:42px;border-radius:50%;border:1px solid #a7653855;background:#fff5;color:#85471f;font-size:20px;cursor:pointer;transition:transform .2s,background .2s}
+.drink-nav:hover{transform:scale(1.07);background:#fff9}
+#drinkUseSelection{border:0;border-radius:999px;background:#a85d2b;color:#fff1dc;padding:14px 24px;font-size:10px;letter-spacing:.15em;box-shadow:0 8px 25px #8c4a272b;cursor:pointer}
+#drinkUseSelection:active{transform:scale(.98)}
+.drink-price{font:500 10px Manrope,sans-serif;letter-spacing:.15em;color:#9d663c;margin-top:10px}
+.drink-price b{font-size:17px;color:#a95f2a}
+@media(max-width:600px){
+ #drinkPicker{padding:18px 12px calc(18px + env(safe-area-inset-bottom))}
+ .drink-picker-inner{height:100%;gap:8px;justify-content:space-around}
+ .drink-picker-head{font-size:8px}
+ .drink-picker-title h2{font-size:clamp(36px,11vw,52px)}
+ .drink-picker-title p{font-size:8px;letter-spacing:.1em}
+ .drink-carousel{height:clamp(250px,39vh,340px);width:100vw;margin:0 -12px}
+ .drink-card{width:clamp(142px,49vw,190px);height:clamp(220px,34vh,285px);padding:13px 10px}
+ .drink-card[data-pos="0"]{transform:translate(calc(-50% - 39vw),-50%) scale(.76) rotate(-7deg)}
+ .drink-card[data-pos="2"]{transform:translate(calc(-50% + 39vw),-50%) scale(.76) rotate(7deg)}
+ .drink-cup{font-size:72px;height:120px;width:95px}
+ .drink-name{font-size:20px}
+ .drink-note{font-size:8px}
+ #drinkSelectedName{font-size:24px}
+ #drinkSelectedNote{font-size:10px;margin:5px 0 11px}
+ .drink-picker-actions{gap:10px}
+ #drinkUseSelection{padding:13px 19px;font-size:9px}
+ .drink-price{margin-top:7px}
+}
+@media(prefers-reduced-motion:reduce){#drinkPicker,.drink-card,.drink-cup,.drink-nav{transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -376,6 +432,22 @@ h1{font-size:clamp(44px,6.4vw,88px);line-height:.92;letter-spacing:-.06em}
 </aside>
 
 <div id="status"><span class="dot"></span><span id="statusText">READY FOR CUE</span></div>
+
+<div id="drinkPicker" aria-hidden="true" role="dialog" aria-modal="true" aria-label="选择一杯咖啡">
+ <div class="drink-picker-inner">
+  <div class="drink-picker-head"><strong>COFFEEVERSE</strong><span>THE COFFEE COLLECTION</span><button id="drinkPickerClose" type="button" aria-label="关闭饮品选择">×</button></div>
+  <div class="drink-picker-title"><h2>Only This Weekend</h2><p>CHOOSE YOUR COFFEE · FOLLOW THE FLAVOR</p></div>
+  <div class="drink-carousel" id="drinkCarousel" aria-label="左右滑动选择咖啡">
+   <button class="drink-card" data-drink="0" type="button" aria-label="选择橙香奶咖"><span class="drink-cup">🥤</span><span class="drink-name">Orange Honey</span><span class="drink-note">CITRUS · HONEY · CREAM</span></button>
+   <button class="drink-card" data-drink="1" type="button" aria-label="选择莓果云朵"><span class="drink-cup">🍓</span><span class="drink-name">Berry Cloud</span><span class="drink-note">BERRY · MILK · SOFT</span></button>
+   <button class="drink-card" data-drink="2" type="button" aria-label="选择焦糖拿铁"><span class="drink-cup">☕</span><span class="drink-name">Caramel Latte</span><span class="drink-note">CARAMEL · COCOA · ROUND</span></button>
+   <button class="drink-card" data-drink="3" type="button" aria-label="选择冷萃"><span class="drink-cup">🧋</span><span class="drink-name">Slow Cold Brew</span><span class="drink-note">COOL · CLEAN · SWEET</span></button>
+   <button class="drink-card" data-drink="4" type="button" aria-label="选择摩卡"><span class="drink-cup">🍫</span><span class="drink-name">Dark Mocha</span><span class="drink-note">DARK CHOCOLATE · SILK</span></button>
+  </div>
+  <div class="drink-picker-footer"><h3 id="drinkSelectedName">Berry Cloud</h3><p id="drinkSelectedNote">莓果甜感与柔滑奶香交织。选择它，继续探索这杯咖啡的风味。</p><div class="drink-picker-actions"><button id="drinkPrev" class="drink-nav" type="button" aria-label="上一杯">‹</button><button id="drinkUseSelection" type="button">EXPLORE THIS CUP ↗</button><button id="drinkNext" class="drink-nav" type="button" aria-label="下一杯">›</button></div><div class="drink-price"><b>$12.00</b> EACH　·　BUY 1 GET 1 FREE</div></div>
+ </div>
+</div>
+
 </main>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <script type="module">
@@ -691,6 +763,58 @@ const resultCss=document.createElement('style');resultCss.textContent='#journeyR
 const oldAskCoffee=askCoffee;
 askCoffee=async function(question){const context=document.querySelector('#assistant').dataset.context||journeyStages[journeyState.stage].kicker;const q=String(question||'');if(/根据我的旅程|当前场景|这一步|我的选择/.test(q)||q.includes('旅程解释')){const msg='根据当前旅程状态（'+context+'），你选择了'+journeyState.process+'处理、'+journeyState.roast+'烘焙和'+journeyState.grind+'研磨。'+(journeyState.stage===3?'压粉要追求水平、稳定与一致，不是单纯用蛮力。':journeyState.stage===4?'观察流速、颜色和味道的平衡；这里的萃取效果是视觉模拟，不能替代真实测量。':'这些选择会影响风味方向；目前是交互式演示数据，并非对真实咖啡豆的实验结果。');oldAskCoffee(q);setTimeout(()=>addBubble(msg,'bot'),80);return;}oldAskCoffee(q);};
 showJourneyStage(0);
+
+
+/* Touch-friendly cover-flow selector; selection is committed into the shared experiment context. */
+(()=>{
+ const picker=document.getElementById('drinkPicker');
+ const carousel=document.getElementById('drinkCarousel');
+ const cards=[...document.querySelectorAll('.drink-card')];
+ const names=['Orange Honey','Berry Cloud','Caramel Latte','Slow Cold Brew','Dark Mocha'];
+ const notes=[
+  '橙香、蜂蜜与奶油感。风味方向偏明亮、柔和，适合从果香实验开始。',
+  '莓果甜感与柔滑奶香交织。选择它，继续探索这杯咖啡的风味。',
+  '焦糖甜感、坚果与可可，口感圆润，是观察中烘平衡感的好起点。',
+  '清爽干净、甜感悠长。适合探索低温萃取与清晰风味。',
+  '黑巧克力与烘烤香气更突出，适合观察深烘风味方向。'
+ ];
+ let selected=1,startX=0,dragging=false;
+ const toggle=document.createElement('button');
+ toggle.id='drinkPickerToggle';toggle.type='button';toggle.textContent='☕ 选择本次咖啡';
+ const top=document.querySelector('.journey-top');
+ if(top)top.appendChild(toggle);
+ function render(){
+  cards.forEach((card,i)=>{const pos=(i-selected+cards.length)%cards.length;card.dataset.pos=String(pos);card.setAttribute('aria-pressed',String(i===selected));});
+  document.getElementById('drinkSelectedName').textContent=names[selected];
+  document.getElementById('drinkSelectedNote').textContent=notes[selected];
+ }
+ function open(){picker.classList.add('open');picker.setAttribute('aria-hidden','false');render();}
+ function close(){picker.classList.remove('open');picker.setAttribute('aria-hidden','true');toggle.focus({preventScroll:true});}
+ function move(delta){selected=(selected+delta+cards.length)%cards.length;render();}
+ toggle.addEventListener('click',open);
+ document.getElementById('drinkPickerClose').addEventListener('click',close);
+ document.getElementById('drinkPrev').addEventListener('click',()=>move(-1));
+ document.getElementById('drinkNext').addEventListener('click',()=>move(1));
+ cards.forEach((card,i)=>card.addEventListener('click',()=>{if(i===selected)return;const delta=(i-selected+cards.length)%cards.length;move(delta===4?-1:delta>2?delta-5:delta);}));
+ picker.addEventListener('click',e=>{if(e.target===picker)close();});
+ carousel.addEventListener('pointerdown',e=>{startX=e.clientX;dragging=true;carousel.setPointerCapture?.(e.pointerId);});
+ carousel.addEventListener('pointerup',e=>{if(!dragging)return;const dx=e.clientX-startX;dragging=false;if(Math.abs(dx)>35)move(dx<0?1:-1);});
+ carousel.addEventListener('pointercancel',()=>dragging=false);
+ document.getElementById('drinkUseSelection').addEventListener('click',()=>{
+  const state=window.coffeeJourneyState;
+  if(state){state.drink=names[selected];}
+  const title=document.getElementById('journeyTitle');
+  const desc=document.getElementById('journeyDesc');
+  const feedback=document.getElementById('journeyFeedback');
+  if(title&&desc){title.textContent='为 '+names[selected]+' 开始实验';desc.textContent=notes[selected]+' 接下来，你可以选择处理方式、烘焙程度并记录实验路径。';}
+  if(feedback)feedback.textContent='已选择 '+names[selected]+' · 风味已写入本次实验';
+  const context=document.getElementById('assistant');
+  if(context)context.dataset.context=(context.dataset.context||'COFFEEVERSE')+'；饮品选择：'+names[selected];
+  close();
+ });
+ document.addEventListener('keydown',e=>{if(!picker.classList.contains('open'))return;if(e.key==='Escape')close();if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1);});
+ render();
+})();
 
 </script>
 </body>
