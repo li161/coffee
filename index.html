@@ -161,6 +161,13 @@ button,input{font:inherit}button{cursor:pointer}
  .product-info p{margin-bottom:8px}
  .order{min-height:44px}
 }
+/* Direct-manipulation carousel controls */
+.stage{touch-action:pan-y;cursor:grab}
+.stage.is-dragging{cursor:grabbing}
+.stage .bottle-wrap{transform-origin:50% 55%;backface-visibility:visible}
+.stage .bottle-wrap.is-center{filter:drop-shadow(0 24px 24px #0005)}
+.stage .bottle-wrap.is-left,.stage .bottle-wrap.is-right{filter:drop-shadow(0 18px 18px #0004)}
+.stage .bottle-wrap.is-left:hover,.stage .bottle-wrap.is-right:hover{filter:drop-shadow(0 22px 22px #0007);opacity:1}
 </style>
 </head>
 <body>
@@ -235,7 +242,37 @@ renderWine(0,false);
 document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea'))return;if(e.key==='ArrowLeft')renderWine(current-1);if(e.key==='ArrowRight')renderWine(current+1)});
 
 // Drag the bottle horizontally for a tactile, product-showcase feel.
-let down=false,startX=0,baseRot=0,rot=0;const bottle=$('bottleWrap');stage.addEventListener('pointerdown',e=>{const hit=e.target.closest('.bottle-wrap.is-center');if(!hit)return;down=true;startX=e.clientX;hit.setPointerCapture?.(e.pointerId);bottle.style.animationPlayState='paused'});stage.addEventListener('pointermove',e=>{if(!down)return;rot=Math.max(-32,Math.min(32,baseRot+(e.clientX-startX)*.35));bottle.querySelector('.bottle').style.transform='rotateY('+rot+'deg)'});function stopDrag(){if(!down)return;down=false;baseRot=rot;if(Math.abs(baseRot)>18){baseRot=baseRot>0?18:-18;rot=baseRot}bottle.style.animationPlayState='running';bottle.querySelector('.bottle').style.transform='rotateY('+baseRot+'deg)'}stage.addEventListener('pointerup',stopDrag);stage.addEventListener('pointercancel',stopDrag);stage.addEventListener('pointerleave',stopDrag);
+let down=false,startX=0,baseRot=0,rot=0;const bottle=$('bottleWrap');stage.addEventListener('pointerdown',e=>{const hit=e.target.closest('.bottle-wrap.is-center');if(!hit)return;down=true;startX=e.clientX;hit.setPointerCapture?.(e.pointerId);bottle.style.animationPlayState='paused'});stage.addEventListener('pointermove',e=>{if(!down)return;rot=Math.max(-32,Math.min(32,baseRot+(
+// Direct manipulation: swipe/drag the carousel itself, or use the mouse wheel.
+let gestureStartX=null,gestureStartY=null,gestureMoved=false,lastWheelAt=0;
+stage.addEventListener('pointerdown',e=>{
+ if(e.target.closest('button'))return;
+ gestureStartX=e.clientX;gestureStartY=e.clientY;gestureMoved=false;
+ stage.classList.add('is-dragging');
+},{passive:true});
+stage.addEventListener('pointermove',e=>{
+ if(gestureStartX===null)return;
+ if(Math.abs(e.clientX-gestureStartX)>8)gestureMoved=true;
+ if(gestureMoved){
+  const dx=e.clientX-gestureStartX;
+  stage.style.setProperty('--drag-tilt',Math.max(-7,Math.min(7,dx*.025))+'deg');
+ }
+},{passive:true});
+function finishCarouselGesture(e){
+ if(gestureStartX===null)return;
+ const dx=e.clientX-gestureStartX,dy=e.clientY-gestureStartY;
+ stage.classList.remove('is-dragging');stage.style.removeProperty('--drag-tilt');
+ if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.15){renderWine(current+(dx<0?1:-1));}
+ gestureStartX=null;gestureStartY=null;gestureMoved=false;
+}
+stage.addEventListener('pointerup',finishCarouselGesture,{passive:true});
+stage.addEventListener('pointercancel',finishCarouselGesture,{passive:true});
+stage.addEventListener('wheel',e=>{
+ if(Math.abs(e.deltaX)<Math.abs(e.deltaY)&&Math.abs(e.deltaY)<20)return;
+ const now=Date.now();if(now-lastWheelAt<650)return;
+ lastWheelAt=now;renderWine(current+((e.deltaX||e.deltaY)>0?1:-1));
+},{passive:true});
+e.clientX-startX)*.35));bottle.querySelector('.bottle').style.transform='rotateY('+rot+'deg)'});function stopDrag(){if(!down)return;down=false;baseRot=rot;if(Math.abs(baseRot)>18){baseRot=baseRot>0?18:-18;rot=baseRot}bottle.style.animationPlayState='running';bottle.querySelector('.bottle').style.transform='rotateY('+baseRot+'deg)'}stage.addEventListener('pointerup',stopDrag);stage.addEventListener('pointercancel',stopDrag);stage.addEventListener('pointerleave',stopDrag);
 </script>
 </body>
 </html>
