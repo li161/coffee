@@ -125,7 +125,7 @@ function crackSound(){
 }
 function trigger(){
  const now=performance.now();if(bursting||now-lastTrigger<120)return;lastTrigger=now;
- bursting=true;burstStart=now/1000;stage.classList.remove('burst');void stage.offsetWidth;stage.classList.add('burst');
+ bursting=true;burstStart=clock.getElapsedTime();stage.classList.remove('burst');void stage.offsetWidth;stage.classList.add('burst');
  makeBurst();crackSound();statusText.textContent='AROMA RELEASED';triggerButton.textContent='✦  RELEASE AROMA';
 }
 triggerButton.addEventListener('click',trigger);
