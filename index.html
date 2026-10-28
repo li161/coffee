@@ -241,6 +241,9 @@ h1 em{font-weight:500;color:transparent}
 }
 @media(prefers-reduced-motion:reduce){.volume-beam,.avatar:before,.avatar:after,#trigger{animation:none!important}}
 
+
+#stage.origin-warm{background:radial-gradient(ellipse at 45% 44%,#754522 0%,#4b2817 33%,#2b150d 64%,#120805 100%);transition:background 1.4s ease}
+#assistant[data-state="thinking"] .live-pill{color:#ffdda5;box-shadow:0 0 14px #e2ad5c22}
 </style>
 </head>
 <body>
@@ -298,7 +301,14 @@ const storyTexts=[
  '回来后，他推翻了当年所有采购标准。不是只问价格和等级，而是重新理解产地、处理法、含水率与烘焙曲线——把“买豆子”变成认真学习。',
  '第三年，他才觉得自己的咖啡“能喝了”。一颗豆子从土地到杯子的距离，比大多数人想象的长得多。现在这杯咖啡里，也有那三年的耐心。'
 ];
+const caliperCursor=document.querySelector('.caliper-cursor'),caliperProgress=document.querySelector('.caliper-progress');
+function moveCaliper(index){
+ const x=index*100/3;
+ if(window.gsap){gsap.to(caliperCursor,{left:x+'%',duration:.72,ease:'power3.out'});gsap.to(caliperProgress,{width:x+'%',duration:.72,ease:'power3.out'});}
+ else{caliperCursor.style.left=x+'%';caliperProgress.style.width=x+'%';}
+}
 storySteps.forEach((button,index)=>button.addEventListener('click',()=>{
+ moveCaliper(index);
  storySteps.forEach((item,i)=>item.classList.toggle('active',i===index));
  storyCopy.textContent=storyTexts[index];storyCount.textContent=String(index+1).padStart(2,'0')+' / 04';
  if(index===2){targetBeanColor.copy(roastColors.dark);roastChip.textContent='烘焙阶段 · 香气发展';}
@@ -320,6 +330,15 @@ function setRoastFromText(text){
  roastChip.classList.add('active');
 }
 function addBubble(text,who='bot'){const el=document.createElement('div');el.className='bubble '+who;el.textContent=text;chatLog.appendChild(el);chatLog.scrollTop=chatLog.scrollHeight;return el;}
+function typeAnswer(node,text){
+ const answer=String(text||'');let i=0;
+ document.querySelector('#assistant').dataset.state='thinking';
+ if(window.gsap){gsap.killTweensOf(node);node.textContent='';gsap.to({n:0},{n:answer.length,duration:Math.min(2.1,Math.max(.35,answer.length*.012)),ease:'none',onUpdate:function(){const next=Math.floor(this.targets()[0].n);if(next!==i){i=next;node.textContent=answer.slice(0,i);chatLog.scrollTop=chatLog.scrollHeight;}},onComplete:()=>{document.querySelector('#assistant').dataset.state='done';}});}
+ else{node.textContent=answer;document.querySelector('#assistant').dataset.state='done';}
+ const lower=answer+' '+(text||'');
+ if(/烘焙|中深烘|中烘|深烘/.test(lower)){targetBeanColor.copy(roastColors.dark);document.querySelector('.heat-haze').style.opacity='.42';}
+ if(/三年|产地|云南|山头/.test(lower)){document.querySelector('#stage').classList.add('origin-warm');}
+}
 const localKnowledge=[
  {test:/烘焙度|烘焙程度|浅烘|中烘|深烘/,answer:'这是一款中烘风格的演示豆。中烘在甜感、酸质与醇厚度之间取得平衡，常能呈现坚果、焦糖和可可风味。实际烘焙度以豆袋标注与烘焙记录为准。'},
  {test:/创始人|选豆|标准|产地|豆子怎么选/,answer:'选豆通常看四点：产区与品种是否可追溯、生豆含水率与瑕疵率、杯测中的干净度和甜感，以及风味是否符合产品定位。我们会优先考虑批次稳定、来源透明、风味表达清晰的咖啡豆。此处为演示知识，需替换为品牌真实选豆标准。'},
@@ -343,7 +362,7 @@ async function askCoffee(question){
    answer=item?.answer||'可以从烘焙度、选豆标准或冲煮方式聊起。当前是演示知识库，接入品牌真实知识库 API 后，回答即可使用真实资料。';
    apiNote.textContent='知识库：内置演示知识（尚未连接真实 API）';
   }
-  pending.textContent=answer;setRoastFromText(answer);
+  typeAnswer(pending,answer);setRoastFromText(answer);
  }catch(err){pending.textContent='暂时无法读取知识库：'+err.message+'。请检查 API 地址、跨域设置和服务状态。';apiNote.textContent='知识库 API 连接异常';}
 }
 document.querySelectorAll('.quick').forEach(btn=>btn.addEventListener('click',()=>askCoffee(btn.dataset.question)));
