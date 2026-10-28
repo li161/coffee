@@ -14,7 +14,7 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
 #scene{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hud{position:absolute;z-index:2;left:clamp(22px,5vw,76px);top:clamp(22px,5vh,58px);pointer-events:none}
 .eyebrow{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:#d7aa72;opacity:.9}
-h1{margin:12px 0 0;font-size:clamp(24px,4vw,48px);font-weight:450;letter-spacing:-.045em;line-height:1.04}
+h1{margin:12px 0 0;font-size:clamp(28px,4.5vw,58px);font-weight:420;letter-spacing:-.055em;line-height:1.02}
 .sub{margin-top:12px;font-size:12px;letter-spacing:.12em;color:#c7a88a}
 .brand{position:absolute;z-index:2;right:clamp(22px,5vw,76px);top:clamp(26px,5vh,60px);font-size:11px;letter-spacing:.24em;color:#d8b38d;text-align:right}
 .brand b{display:block;color:#f6e4ce;font-size:14px;font-weight:500;letter-spacing:.28em;margin-bottom:7px}
@@ -36,7 +36,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px
 
 /* Knowledge-driven roast assistant */
 #stage{padding-right:0}
-#storyPanel{position:absolute;z-index:5;left:clamp(22px,5vw,76px);bottom:clamp(100px,15vh,155px);width:min(410px,34vw);padding:20px 21px 16px;border:1px solid #e6c69b24;border-radius:16px;background:linear-gradient(135deg,#1b100bd9,#110906b8);backdrop-filter:blur(18px);box-shadow:0 22px 70px #0005;color:#f0dfca}
+#storyPanel{position:absolute;z-index:5;left:clamp(22px,5vw,76px);bottom:clamp(100px,15vh,155px);width:min(410px,34vw);padding:20px 21px 16px;border:1px solid #e6c69b24;border-radius:16px;background:linear-gradient(135deg,#1c100beF,#100806e8);backdrop-filter:blur(24px);box-shadow:0 24px 90px #0008, inset 0 1px #f3d4a51a;color:#f0dfca}
 .story-kicker{display:flex;align-items:center;gap:9px;font-size:8px;letter-spacing:.22em;color:#cda779}
 .story-line{display:inline-block;width:24px;height:1px;background:#d6aa70}
 #storyCopy{font-size:12px;line-height:1.9;color:#e4d0b9;margin:13px 0 16px;min-height:68px}
@@ -48,7 +48,7 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px
 .story-step.active{background:#b57a4020;border-color:#d5a46a70;color:#ffe0b4;transform:translateY(-2px)}
 .story-step.active span,.story-step.active small{color:#d9b080}
 .story-foot{display:flex;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1px solid #ffffff10;font:8px ui-monospace,monospace;letter-spacing:.13em;color:#8f765e}
-#assistant{position:absolute;z-index:5;right:clamp(16px,2.8vw,42px);top:50%;transform:translateY(-50%);width:min(350px,31vw);max-height:min(690px,82vh);display:flex;flex-direction:column;gap:14px;padding:18px;border:1px solid rgba(235,192,140,.2);border-radius:22px;background:rgba(22,12,9,.66);backdrop-filter:blur(22px);box-shadow:0 20px 80px #0005;color:#f4e3d0}
+#assistant{position:absolute;z-index:5;right:clamp(16px,2.8vw,42px);top:50%;transform:translateY(-50%);width:min(350px,31vw);max-height:min(690px,82vh);display:flex;flex-direction:column;gap:14px;padding:18px;border:1px solid rgba(235,192,140,.2);border-radius:22px;background:rgba(18,9,6,.78);backdrop-filter:blur(26px);box-shadow:0 24px 90px #0008, inset 0 1px #f3d4a512;color:#f4e3d0}
 .assistant-head{display:flex;align-items:center;gap:12px}.avatar{width:54px;height:54px;flex:0 0 54px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#f3d4a4,#93603d 52%,#392016);border:1px solid #d8b17d66;font-size:25px;box-shadow:0 0 24px #b97b3b22}.assistant-name{font-size:13px;letter-spacing:.08em}.assistant-role{font-size:10px;color:#b99b7e;margin-top:5px}.live-pill{margin-left:auto;border:1px solid #8cbb9566;color:#b4d7ac;border-radius:999px;padding:5px 8px;font-size:9px;white-space:nowrap}
 #chatLog{overflow:auto;min-height:110px;max-height:34vh;display:flex;flex-direction:column;gap:10px;padding:4px 2px;scrollbar-width:thin;scrollbar-color:#80593d transparent}
 .bubble{font-size:12px;line-height:1.75;padding:11px 12px;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.bot{background:#ffffff0b;border:1px solid #ffffff0d;border-top-left-radius:4px;color:#e8d4bd}.bubble.user{align-self:flex-end;background:#8b583a33;border:1px solid #c08a5b44;border-top-right-radius:4px;color:#f8e8d5;max-width:92%}
@@ -138,26 +138,17 @@ h1{text-shadow:0 0 34px #ffb86c20,0 2px 24px #0008}
 #trigger{box-shadow:0 0 0 1px #e7b86b12,inset 0 0 22px #ffbf6610,0 0 26px #ff9e3b0b;transition:all .3s}
 #trigger:hover{box-shadow:0 0 30px #ffb45a30,inset 0 0 24px #ffbf661b}
 #status .dot{animation:statusPulse 1.6s ease-in-out infinite}@keyframes statusPulse{50%{opacity:.35;box-shadow:0 0 3px #d5a05c}}
-.orbit-stage{position:absolute;z-index:1;left:43%;top:49%;width:min(60vw,720px);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;perspective:800px;opacity:.16;filter:blur(.4px)}
-.orbit{position:absolute;inset:13%;border:1px solid #f3b76d23;border-radius:50%;box-shadow:0 0 28px #ff9b3710,inset 0 0 25px #ffb45a09}
-.orbit.one{transform:rotateX(69deg) rotateZ(-20deg);animation:orbitA 19s linear infinite}
-.orbit.two{inset:20%;transform:rotateY(67deg) rotateZ(25deg);border-color:#ffdda02b;animation:orbitB 14s linear infinite}
-.orbit.three{inset:5%;transform:rotateX(74deg) rotateZ(60deg);border-style:dashed;opacity:.45;animation:orbitA 30s linear infinite reverse}
-.orbit:before,.orbit:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#ffe0a0;box-shadow:0 0 10px 3px #ffad4b99}
-.orbit:before{left:15%;top:15%}.orbit:after{right:13%;bottom:19%;width:3px;height:3px}
-@keyframes orbitA{to{transform:rotateX(69deg) rotateZ(340deg)}}@keyframes orbitB{to{transform:rotateY(67deg) rotateZ(385deg)}}
-.ambient-label{position:absolute;z-index:2;left:43%;top:18%;transform:translateX(-50%);font:9px/1.6 ui-monospace,monospace;letter-spacing:.28em;color:#ffcf9180;pointer-events:none;white-space:nowrap;opacity:.45}
-.ambient-label:after{content:"";display:block;height:1px;width:70%;margin:8px auto;background:linear-gradient(90deg,transparent,#ffca8255,transparent)}
-#stage.burst .orbit{border-color:#ffd99b88;box-shadow:0 0 45px #ff9d3b30}
-#stage.burst .orbit.one{animation-duration:2s}#stage.burst .orbit.two{animation-duration:1.5s}
-@media(max-width:850px){.orbit-stage{left:50%;top:31%;width:min(105vw,560px);opacity:.5}.ambient-label{left:50%;top:18%;font-size:7px}#assistant{animation:panelArriveMobile .9s .15s both}@keyframes panelArriveMobile{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}}
-@media(max-width:480px){.orbit-stage{top:31%;width:112vw}.ambient-label{top:17%;letter-spacing:.16em}.orbit.three{opacity:.35}}
+/* Cinematic atmosphere: soft lens bloom and restrained film grain, no sci-fi orbit rings. */
+.light-leak{position:absolute;z-index:1;inset:-10%;pointer-events:none;background:radial-gradient(ellipse at 42% 43%,#d77a3526 0%,transparent 24%),radial-gradient(ellipse at 51% 58%,#f2bd7720 0%,transparent 36%),linear-gradient(112deg,transparent 20%,#e2a15d08 48%,transparent 70%);mix-blend-mode:screen}
+.grain-overlay{position:absolute;z-index:4;inset:0;pointer-events:none;opacity:.13;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.24'/%3E%3C/svg%3E");mix-blend-mode:soft-light}
+#stage:after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:linear-gradient(90deg,#0b0503a8 0%,transparent 28%,transparent 66%,#0b05036b 100%),linear-gradient(0deg,#0a0504a8 0%,transparent 28%,transparent 78%,#0a050455 100%)}
+@media(max-width:850px){.light-leak{inset:-4%;background:radial-gradient(ellipse at 50% 32%,#d77a3526 0%,transparent 34%),radial-gradient(ellipse at 48% 48%,#f2bd7718 0%,transparent 46%)}}
 @media(prefers-reduced-motion:reduce){#stage,.orbit,.avatar,.avatar:after,.hud,.brand,#status .dot{animation:none!important}}
 </style>
 </head>
 <body>
 <main id="stage" aria-label="咖啡豆香气粒子互动特效">
-<canvas id="scene" aria-label="旋转咖啡豆与香气粒子"></canvas><div class="orbit-stage" aria-hidden="true"><div class="orbit one"></div><div class="orbit two"></div><div class="orbit three"></div></div><div class="ambient-label" aria-hidden="true">AROMA FIELD / PARTICLE SYSTEM 03</div><div id="flash"></div>
+<canvas id="scene" aria-label="电影感咖啡豆与香气粒子"></canvas><div class="light-leak" aria-hidden="true"></div><div class="grain-overlay" aria-hidden="true"></div><div id="flash"></div>
 <div class="hud"><div class="eyebrow">ORIGIN STORY &nbsp; / &nbsp; YUNNAN, CHINA</div><h1>一颗豆子的<br><em>三年旅程。</em></h1><div class="sub">从一颗红果，到一杯真正懂得的咖啡。</div></div>
 <div class="brand"><b>FROM LAND TO CUP</b>YUNNAN · COFFEE ORIGIN STORY</div>
 <section id="storyPanel" aria-label="咖啡豆的三年故事">
@@ -272,45 +263,47 @@ const rim=new THREE.PointLight(0xd17a3d,19,13);rim.position.set(2.8,1.4,-1.5);sc
 const fill=new THREE.PointLight(0xf2d5b0,5,10);fill.position.set(-3,-2,4);scene.add(fill);
 const topLight=new THREE.SpotLight(0xffc982,26,12,Math.PI/5,.75,1.5);topLight.position.set(0,4,3);topLight.target.position.set(0,0,0);scene.add(topLight,topLight.target);
 const beanRoot=new THREE.Group();scene.add(beanRoot);
-const halves=new THREE.Group();beanRoot.add(halves);
-// Procedural micro-roughness: a subtle roast-skin texture without external image dependencies.
+// One continuous, asymmetrical bean shell. The center cleft is sculpted into the surface,
+// rather than making the bean from two overlapping balls.
 const skinCanvas=document.createElement('canvas');skinCanvas.width=256;skinCanvas.height=256;
-const skinCtx=skinCanvas.getContext('2d');skinCtx.fillStyle='#888';skinCtx.fillRect(0,0,256,256);
-const skinPixels=skinCtx.getImageData(0,0,256,256);
-for(let i=0;i<skinPixels.data.length;i+=4){const n=118+Math.random()*72;skinPixels.data[i]=n;skinPixels.data[i+1]=n;skinPixels.data[i+2]=n;skinPixels.data[i+3]=255;}
-skinCtx.putImageData(skinPixels,0,0);
-for(let i=0;i<520;i++){const x=Math.random()*256,y=Math.random()*256,r=.25+Math.random()*1.3;skinCtx.fillStyle=Math.random()>.5?'#444':'#ddd';skinCtx.globalAlpha=.12+Math.random()*.24;skinCtx.beginPath();skinCtx.ellipse(x,y,r,r*(.3+Math.random()),Math.random(),0,Math.PI*2);skinCtx.fill();}
+const skinCtx=skinCanvas.getContext('2d');
+const skinGradient=skinCtx.createLinearGradient(0,0,256,256);skinGradient.addColorStop(0,'#b18a65');skinGradient.addColorStop(.48,'#777');skinGradient.addColorStop(1,'#c5a17d');
+skinCtx.fillStyle=skinGradient;skinCtx.fillRect(0,0,256,256);
+for(let i=0;i<1500;i++){const x=Math.random()*256,y=Math.random()*256;skinCtx.fillStyle=Math.random()>.5?'#2c1b13':'#f3d7b0';skinCtx.globalAlpha=.035+Math.random()*.12;skinCtx.beginPath();skinCtx.ellipse(x,y,.35+Math.random()*1.2,.25+Math.random()*.65,Math.random(),0,Math.PI*2);skinCtx.fill();}
 skinCtx.globalAlpha=1;
-const skinTexture=new THREE.CanvasTexture(skinCanvas);skinTexture.wrapS=skinTexture.wrapT=THREE.RepeatWrapping;skinTexture.repeat.set(1.4,1.4);
-const beanMaterial=new THREE.MeshPhysicalMaterial({color:0x512311,roughness:.37,metalness:0,clearcoat:.34,clearcoatRoughness:.32,bumpMap:skinTexture,bumpScale:.024});
-const grooveMaterial=new THREE.MeshStandardMaterial({color:0x1d0c07,roughness:.38,metalness:.03});
-const beanGeo=new THREE.SphereGeometry(1,72,52);
-function makeHalf(side){
- const group=new THREE.Group();halves.add(group);
- const geo=beanGeo.clone(),p=geo.attributes.position;
- for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
-  const taper=1-.17*Math.max(0,y);
-  const organic=1+.018*Math.sin(x*17+y*11)*Math.cos(z*19-y*7)+.009*Math.sin(y*31+x*8);
-  p.setXYZ(i,x*.84*taper*organic,y*1.18*organic,z*.38*organic);
+const skinTexture=new THREE.CanvasTexture(skinCanvas);skinTexture.wrapS=skinTexture.wrapT=THREE.RepeatWrapping;skinTexture.repeat.set(1.1,1.25);
+const beanMaterial=new THREE.MeshPhysicalMaterial({color:0x663018,roughness:.43,metalness:0,clearcoat:.22,clearcoatRoughness:.42,bumpMap:skinTexture,bumpScale:.014});
+const grooveMaterial=new THREE.MeshStandardMaterial({color:0x1b0905,roughness:.7});
+const beanGeo=new THREE.SphereGeometry(1,128,96),p=beanGeo.attributes.position;
+for(let i=0;i<p.count;i++){
+ const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+ const taper=1-.25*Math.pow(Math.abs(y),2.2);
+ const organic=1+.014*Math.sin(x*13+y*9)*Math.cos(z*15-y*5)+.006*Math.sin(y*29+x*7);
+ let xx=x*.91*taper*organic;
+ let yy=y*1.25*organic;
+ let zz=z*.48*organic;
+ // The characteristic wavy crease sinks into the front face, following the bean's length.
+ if(z>0){
+  const seamX=.075*Math.sin(y*3.15)+.018*Math.sin(y*8);
+  const groove=Math.exp(-Math.pow((x-seamX)/.075,2))*Math.pow(Math.max(0,1-y*y),.42);
+  zz-=groove*.105;
  }
- geo.computeVertexNormals();
- const mesh=new THREE.Mesh(geo,beanMaterial);mesh.scale.set(.79,.99,1);mesh.position.x=side*.34;mesh.position.y=.03;mesh.position.z=0;mesh.rotation.z=side*.14;mesh.scale.x*=.64;
- group.add(mesh);
- // The raised inner edge makes the characteristic coffee-bean seam visible.
- const seamCurve=[];
- for(let i=0;i<=36;i++){const y=-.88+i/36*1.82;seamCurve.push(new THREE.Vector3(side*(.32+.11*Math.sin(y*3.2)),y,.35*Math.sqrt(Math.max(.05,1-y*y))));}
- const seamGeo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seamCurve),72,.027,8,false);
- const seam=new THREE.Mesh(seamGeo,grooveMaterial);group.add(seam);
- return group;
+ p.setXYZ(i,xx,yy,zz);
 }
-const left=makeHalf(-1),right=makeHalf(1);
-const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.25,40,24),new THREE.MeshBasicMaterial({color:0xc77737,transparent:true,opacity:.025,side:THREE.BackSide,depthWrite:false}));
+beanGeo.computeVertexNormals();
+const beanMesh=new THREE.Mesh(beanGeo,beanMaterial);beanRoot.add(beanMesh);
+// A narrow, dark inset line adds readable depth to the sculpted center crease.
+const seamPoints=[];
+for(let i=0;i<=64;i++){const y=-.96+i/64*1.92;const x=.075*Math.sin(y*3.15)+.018*Math.sin(y*8);const z=.48*Math.sqrt(Math.max(.015,1-y*y))-.095*Math.pow(Math.max(0,1-y*y),.42);seamPoints.push(new THREE.Vector3(x*.91*(1-.25*y*y),y*1.25,z+.008));}
+const seamGeo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seamPoints),128,.012,8,false);
+const seam=new THREE.Mesh(seamGeo,grooveMaterial);beanRoot.add(seam);
+const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.42,48,32),new THREE.MeshBasicMaterial({color:0xd77a37,transparent:true,opacity:.035,side:THREE.BackSide,depthWrite:false}));
 beanRoot.add(beanGlow);
 beanRoot.rotation.set(-.12,.12,-.28);
 function fitBeanForViewport(){
  const mobile=innerWidth<=850;
- beanRoot.position.y=mobile?.72:0;
- beanRoot.scale.set(mobile?1.0:1.18,mobile?1.17:1.38,mobile?1.0:1.15);
+ beanRoot.position.set(mobile?0:-.48,mobile?.72:0,0);
+ beanRoot.scale.set(mobile?1.0:1.24,mobile?1.17:1.48,mobile?1.0:1.18);
 }
 fitBeanForViewport();
 const dustCount=300, positions=new Float32Array(dustCount*3), colors=new Float32Array(dustCount*3), sizes=new Float32Array(dustCount);
@@ -368,10 +361,12 @@ function animate(){
  beanMaterial.color.lerp(targetBeanColor,0.025);
  if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.34;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.08;beanRoot.rotation.z=-.28+Math.sin(t*.24)*.035;}
  if(bursting){
-  const p=Math.min(1,(t-burstStart));const ease=p<.5?1-Math.pow(1-p*2,3):Math.pow((p-.5)*2,3);
-  left.position.x=-.42*ease;right.position.x=.42*ease;left.rotation.z=.12*ease;right.rotation.z=-.12*ease;
-  beanRoot.scale.setScalar(1.0+Math.sin(p*Math.PI)*.08);beanGlow.material.opacity=.055+.2*Math.sin(p*Math.PI);
-  if(p>=.8){bursting=false;left.position.set(0,0,0);right.position.set(0,0,0);left.rotation.z=0;right.rotation.z=0;fitBeanForViewport();beanGlow.material.opacity=.055;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
+  const p=Math.min(1,(t-burstStart));const pulse=Math.sin(Math.min(1,p/.8)*Math.PI);
+  const mobile=innerWidth<=850;
+  const baseX=mobile?1.0:1.24,baseY=mobile?1.17:1.48,baseZ=mobile?1.0:1.18;
+  const swell=1+pulse*.075;
+  beanRoot.scale.set(baseX*swell,baseY*swell,baseZ*swell);beanGlow.material.opacity=.035+.12*pulse;
+  if(p>=.8){bursting=false;fitBeanForViewport();beanGlow.material.opacity=.035;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
  }
  if(particles){
   const geo=particles.geometry,arr=geo.attributes.position.array,vel=geo.userData.vel,life=geo.userData.life,age=t-geo.userData.origin;
