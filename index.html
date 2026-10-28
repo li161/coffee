@@ -403,6 +403,19 @@ h1{font-size:clamp(44px,6.4vw,88px);line-height:.92;letter-spacing:-.06em}
 .simple-picker{display:flex;justify-content:center;gap:10px;max-width:740px;width:100%;margin:0 auto;border-top:1px solid #ffffff27;padding-top:18px}.simple-picker button{flex:1;min-width:0;border:1px solid #ffffff30;border-radius:7px;background:#ffffff08;color:#cbb7b1;padding:13px 8px;cursor:pointer;font-size:13px;transition:background .2s,border-color .2s,color .2s}.simple-picker button i{display:block;font:10px Georgia,serif;color:#bd928a;margin-bottom:6px}.simple-picker button.active{background:#ead5c4;color:#3d1c25;border-color:#ead5c4}.simple-picker button.active i{color:#8b4a51}.simple-footer{display:flex;justify-content:space-between;gap:10px;margin-top:16px;font-size:9px;letter-spacing:.15em;color:#a88c8c}.simple-footer span:last-child{letter-spacing:.05em}
 @media(max-width:600px){#wineExperience{padding:14px 16px 16px}.simple-logo{font-size:20px}.simple-logo span{font-size:9px;margin-left:7px}.simple-showcase{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:0;min-height:0;padding:18px 0 12px}.simple-copy{padding:4px 0 0}.simple-copy>p:first-child{font-size:9px;margin:0}.simple-copy h1{font-size:39px;margin:8px 0}.simple-copy>p:nth-of-type(2){font-size:13px;line-height:1.6;margin:0;max-width:100%}.simple-tags{margin-top:12px;gap:6px}.simple-tags span{padding:6px 9px;font-size:10px}.simple-arrows{display:none}.simple-bottle-area{min-height:260px;height:34svh;max-height:330px}.simple-bottle{width:112px;height:255px}.simple-picker{gap:5px;padding-top:12px}.simple-picker button{font-size:11px;padding:10px 2px}.simple-picker button i{font-size:8px;margin-bottom:4px}.simple-footer{font-size:8px;margin-top:12px}}
 @media(prefers-reduced-motion:reduce){.simple-bottle,.simple-picker button{transition:none}}
+
+/* Visual refinement: more bottle-like silhouette, quieter typography and clearer focus. */
+#wineExperience{background:radial-gradient(ellipse at 68% 48%,#6b3040 0,#30151f 42%,#160d12 82%)}
+#wineExperience .simple-showcase{max-width:1160px;gap:clamp(20px,5vw,80px)}
+#wineExperience .simple-copy h1{letter-spacing:-.035em}
+#wineExperience .simple-bottle{border-radius:14% 14% 8% 8%/4% 4% 3% 3%;filter:drop-shadow(0 28px 24px #0005)}
+#wineExperience .simple-neck{border-radius:5px 5px 1px 1px}
+#wineExperience .simple-label{box-shadow:0 3px 12px #160b0d30}
+#wineExperience .simple-picker button:focus-visible,#wineExperience .simple-arrows button:focus-visible{outline:2px solid #f0c7ad;outline-offset:4px}
+#wineExperience .simple-picker button:hover:not(.active){border-color:#e5b4a2;color:#fff0e6;background:#ffffff12}
+#wineExperience .simple-bottle-area:active{cursor:grabbing}
+@media(min-width:900px){#wineExperience .simple-bottle-area{height:min(58vh,560px)}}
+@media(max-width:600px){#wineExperience .simple-showcase{padding-top:22px}#wineExperience .simple-bottle-area{height:32svh;min-height:250px}#wineExperience .simple-bottle{width:105px;height:242px}}
 </style>
 </head>
 <body>
