@@ -20,10 +20,10 @@ button,input{font:inherit}button{cursor:pointer}
 .bottle-wrap{position:relative;width:clamp(150px,19vw,245px);height:clamp(390px,63vh,560px);transform-style:preserve-3d;transition:transform .3s cubic-bezier(.2,.8,.2,1);animation:float 5s ease-in-out infinite;filter:drop-shadow(20px 30px 25px #0008)}
 @keyframes float{0%,100%{translate:0 0}50%{translate:0 -9px}}
 .bottle{position:absolute;inset:0;transform-style:preserve-3d}
-.neck{position:absolute;z-index:3;left:37%;top:0;width:26%;height:24%;border-radius:9px 9px 3px 3px;background:linear-gradient(90deg,#210c16,#79283f 19%,#b65d70 34%,#5e1a30 72%,#1b0b12);box-shadow:inset 4px 0 4px #fff2,inset -5px 0 8px #0007}
+.neck{position:absolute;z-index:3;left:37%;top:0;width:26%;height:24%;border-radius:9px 9px 3px 3px;background:linear-gradient(90deg,#210c16,var(--wine) 19%,var(--winehi) 34%,var(--wine) 72%,#1b0b12);box-shadow:inset 4px 0 4px #fff2,inset -5px 0 8px #0007}
 .capsule{position:absolute;z-index:4;left:36%;top:-1%;width:28%;height:7%;border-radius:5px 5px 2px 2px;background:linear-gradient(90deg,#8c7048,#e0c38a 25%,#a18452 67%,#59452d);box-shadow:inset 0 2px #f7e1b5aa}
-.shoulders{position:absolute;top:19%;left:13%;width:74%;height:13%;background:linear-gradient(90deg,#1c100c,#542016 13%,#7b301f 27%,#32140e 70%,#130a08);clip-path:polygon(32% 0,68% 0,100% 100%,0 100%)}
-.body{position:absolute;top:28%;left:12%;width:76%;height:68%;border-radius:19% 19% 15% 15% / 7% 7% 6% 6%;overflow:hidden;background:linear-gradient(90deg,#160b08 0%,#40180f 8%,#72271d 22%,#9c4630 36%,#642016 59%,#35130e 84%,#100807 100%);box-shadow:inset 7px 0 8px #f3c89a15,inset -10px 0 15px #0009,0 0 0 1px #d69a6040}
+.shoulders{position:absolute;top:19%;left:13%;width:74%;height:13%;background:linear-gradient(90deg,#1c100c,var(--wine) 20%,var(--winehi) 38%,var(--wine) 70%,#130a08);clip-path:polygon(32% 0,68% 0,100% 100%,0 100%)}
+.body{position:absolute;top:28%;left:12%;width:76%;height:68%;border-radius:19% 19% 15% 15% / 7% 7% 6% 6%;overflow:hidden;background:linear-gradient(90deg,#160b08 0%,var(--wine) 12%,var(--winehi) 36%,var(--wine) 59%,#35130e 84%,#100807 100%);box-shadow:inset 7px 0 8px #f3c89a15,inset -10px 0 15px #0009,0 0 0 1px #d69a6040}
 .body:before{content:"";position:absolute;top:0;bottom:0;left:24%;width:13%;background:linear-gradient(90deg,transparent,#ffc89b28,transparent);filter:blur(3px)}
 .body:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#f5c28b08,transparent 20%,#0b04045c 100%)}
 .label{position:absolute;z-index:2;left:12%;top:38%;width:76%;height:36%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#3c2419;background:linear-gradient(90deg,#bfa47a,#f0dfbb 22%,#e8d3a8 70%,#aa8b60);box-shadow:0 5px 12px #0006;transform:translateZ(2px);padding:8px 3px}
@@ -32,7 +32,7 @@ button,input{font:inherit}button{cursor:pointer}
 .label strong{font-family:Georgia,serif;font-size:clamp(16px,2.1vw,25px);font-weight:500;letter-spacing:.04em;line-height:1.05}
 .label .vintage{font:9px Georgia,serif;letter-spacing:.2em;margin-top:11px}
 .label .ornament{width:24px;height:1px;background:#765735;margin:9px 0}
-.base{position:absolute;bottom:0;left:17%;width:66%;height:5%;border-radius:0 0 18px 18px;background:linear-gradient(90deg,#1a0b08,#652219 28%,#8b3525 48%,#32110c 80%,#100706);box-shadow:0 8px 12px #0007}
+.base{position:absolute;bottom:0;left:17%;width:66%;height:5%;border-radius:0 0 18px 18px;background:linear-gradient(90deg,#1a0b08,var(--wine) 28%,var(--winehi) 48%,#32110c 80%,#100706);box-shadow:0 8px 12px #0007}
 .reflection{position:absolute;bottom:3%;width:36%;height:14px;border-radius:50%;background:#e5b47a26;filter:blur(18px)}
 .product-info{text-align:center;position:relative;z-index:2;margin-top:-8px}
 .kicker{font-size:9px;letter-spacing:.32em;color:var(--gold);text-transform:uppercase}
