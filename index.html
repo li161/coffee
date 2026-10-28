@@ -511,7 +511,7 @@ function animate(){
  beanMaterial.color.lerp(targetBeanColor,0.025);
  if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.34;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.08;beanRoot.rotation.z=-.28+Math.sin(t*.24)*.035;}
  if(bursting){
-  const p=Math.min(1,(t-burstStart));const pulse=Math.sin(Math.min(1,p/.8)*Math.PI);
+  const p=Math.min(2.1,(t-burstStart));const pulse=Math.sin(Math.min(1,p/.8)*Math.PI);
   const mobile=innerWidth<=850;
   const baseX=mobile?1.0:1.24,baseY=mobile?1.17:1.48,baseZ=mobile?1.0:1.18;
   const swell=1+pulse*.075;
