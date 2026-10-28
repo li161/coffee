@@ -300,10 +300,21 @@ h1{font-size:clamp(44px,6.4vw,88px);line-height:.92;letter-spacing:-.06em}
 #storyPanel,#assistant{background:linear-gradient(135deg,rgba(28,17,12,.34),rgba(12,7,5,.48));backdrop-filter:blur(20px) saturate(118%);-webkit-backdrop-filter:blur(20px) saturate(118%);border:1px solid transparent;background-clip:padding-box;position:absolute}
 #storyPanel:before,#assistant:before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(135deg,rgba(255,230,190,.42),rgba(255,255,255,.035) 38%,rgba(230,145,69,.22) 75%,rgba(255,255,255,.025));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 @media(prefers-reduced-motion:reduce){.volume-beam,.heat-haze{animation:none!important}}
+
+/* Photographic coffeehouse atmosphere beneath the transparent Three.js scene. */
+.photo-atmosphere{position:absolute;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(90deg,rgba(10,5,3,.78) 0%,rgba(10,5,3,.34) 36%,rgba(10,5,3,.26) 66%,rgba(10,5,3,.72) 100%),linear-gradient(0deg,rgba(8,4,2,.68),rgba(8,4,2,.12) 46%,rgba(8,4,2,.45)),url("https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=2400&q=90");background-size:cover;background-position:center 54%;transform:scale(1.025);animation:coffeePhotoDrift 32s ease-in-out infinite alternate;filter:saturate(.82) contrast(1.08)}
+@keyframes coffeePhotoDrift{from{transform:scale(1.025) translate3d(0,0,0)}to{transform:scale(1.09) translate3d(-.6%,.4%,0)}}
+#scene{background:transparent!important;z-index:1}
+#assistant:not(.assistant-hidden){z-index:10}
+#summonAbei[aria-expanded="true"]{opacity:0;pointer-events:none}
+@media(max-width:850px){.photo-atmosphere{background-position:center;background-image:linear-gradient(180deg,rgba(10,5,3,.48),rgba(10,5,3,.16) 28%,rgba(10,5,3,.42) 58%,rgba(8,4,2,.78)),url("https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1600&q=85")}}
+@media(prefers-reduced-motion:reduce){.photo-atmosphere{animation:none}}
+
 </style>
 </head>
 <body>
 <main id="stage" aria-label="咖啡豆香气粒子互动特效">
+<div class="photo-atmosphere" aria-hidden="true"></div>
 <canvas id="scene" aria-label="电影感咖啡豆与香气粒子"></canvas><div class="volume-beam" aria-hidden="true"></div><div class="heat-haze" aria-hidden="true"></div><div class="light-leak" aria-hidden="true"></div><div class="grain-overlay" aria-hidden="true"></div><div id="flash"></div>
 <div class="hud"><div class="eyebrow">ORIGIN STORY &nbsp; / &nbsp; YUNNAN, CHINA</div><h1>一颗豆子的<br><em>三年旅程。</em></h1><div class="sub">从一颗红果，到一杯真正懂得的咖啡。</div></div>
 <div class="brand"><b>FROM LAND TO CUP</b>YUNNAN · COFFEE ORIGIN STORY</div>
@@ -324,9 +335,9 @@ h1{font-size:clamp(44px,6.4vw,88px);line-height:.92;letter-spacing:-.06em}
 <button id="mute" type="button" aria-pressed="false">♪ SOUND ON</button>
 <div class="bottom"><button id="trigger" type="button">✦ &nbsp; CRACK THE BEAN</button><div class="hint">口播到「新鲜烘焙」时触发 &nbsp; <kbd>SPACE</kbd> 或点击按钮</div></div>
 
-<button id="summonAbei" type="button" aria-expanded="false"><span class="summon-orb">☕</span><span><b>叫醒阿焙</b><small>ASK THE ROASTER</small></span><i>↗</i></button>
+<button id="summonAbei" type="button" aria-expanded="true"><span class="summon-orb">☕</span><span><b>叫醒阿焙</b><small>ASK THE ROASTER</small></span><i>↗</i></button>
 <div id="flavorConstellation" aria-label="探索咖啡风味"><button class="flavor-node node-fruit" data-flavor="红果" data-question="为什么咖啡会有红果风味？"><span>✳</span><b>红果</b><small>BRIGHT / JUICY</small></button><button class="flavor-node node-cocoa" data-flavor="黑巧" data-question="中深烘为什么会有黑巧克力风味？"><span>◉</span><b>黑巧</b><small>DEEP / ROUND</small></button><button class="flavor-node node-floral" data-flavor="花香" data-question="咖啡里的花香从哪里来？"><span>✺</span><b>花香</b><small>FLORAL / SOFT</small></button><button class="flavor-node node-caramel" data-flavor="焦糖" data-question="咖啡的焦糖甜感是怎么形成的？"><span>✧</span><b>焦糖</b><small>SWEET / WARM</small></button></div>
-<aside id="assistant" class="assistant-hidden" aria-label="咖啡烘焙数字人问答">
+<aside id="assistant" aria-label="咖啡烘焙数字人问答">
   <div class="assistant-head"><div class="avatar" aria-hidden="true">☕</div><div><div class="assistant-name">阿焙 · 咖啡顾问</div><div class="assistant-role">烘焙理念 / 选豆知识 / 冲煮建议</div></div><span class="live-pill">● KNOWLEDGE</span><button id="closeAbei" type="button" aria-label="收起阿焙" style="margin-left:4px;border:1px solid #ffffff22;background:#ffffff08;color:#e8c99f;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:15px;flex:0 0 28px">×</button></div>
   <div class="roast-row">当前烘焙 <span id="roastChip" class="roast-chip active">中烘 · 坚果可可</span></div>
   <div id="chatLog" aria-live="polite"><div class="bubble bot">你好，我是阿焙。点一下咖啡豆，看看香气如何绽放；也可以问我烘焙度、选豆标准或冲煮方式。</div></div>
