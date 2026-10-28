@@ -53,6 +53,33 @@ button,input{font:inherit}button{cursor:pointer}
 @media(max-width:800px){#app{min-height:600px}.product{left:0;top:0;transform:none;width:100%;height:55%;justify-content:flex-start}.stage{height:calc(100% - 70px)}.bottle-wrap{height:clamp(230px,34vh,310px);width:clamp(100px,24vw,145px)}.glow{width:45vw;filter:blur(35px)}.product-info{margin-top:-1px}.product-info h1{font-size:23px;margin:5px 0}.product-info p{font-size:10px}.order{margin-top:10px;padding:11px 28px;font-size:10px}.chat{top:auto;bottom:12px;left:12px;right:12px;transform:none;width:auto;height:42%;min-height:255px;max-height:350px;padding:12px;border-radius:17px}.chat-head{padding-bottom:10px}.face{width:31px;height:31px;font-size:15px}.chat-title{font-size:12px}.chat-sub{font-size:9px}.members{padding:8px 0}.member{padding:5px 8px}.log{gap:8px;padding:4px 0 8px}.bubble{padding:8px 9px;font-size:10px}.msg-face{width:22px;height:22px;flex-basis:22px;font-size:12px}.prompts{padding:7px 0 9px}.prompt-label{margin-bottom:6px}.prompt{padding:6px 8px;font-size:9px}.composer input{font-size:16px}.toast{bottom:calc(42% + 22px);font-size:10px}}
 @media(max-width:390px){.product{height:53%}.bottle-wrap{height:clamp(205px,30vh,255px);width:100px}.product-info h1{font-size:21px}.product-info p{font-size:9px}.order{margin-top:8px;padding:10px 24px}.chat{height:44%;min-height:260px;padding:10px}.chat-sub{max-width:130px;line-height:1.4}.online{font-size:8px}.member{font-size:8px}.prompt{font-size:8px;padding:6px 7px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* Cinematic product stage + explicit wine switching */
+#app{background:radial-gradient(ellipse at 34% 43%,#6c342a 0,#321b19 34%,#180d12 67%,#08060b 100%)}
+#app:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 35% 45%,#000,transparent 72%)}
+.glow{width:min(40vw,500px);background:radial-gradient(circle,#d7a05a40 0,#9b3f4b23 38%,transparent 70%);filter:blur(35px)}
+.stage:before,.stage:after{content:"";position:absolute;width:min(31vw,390px);aspect-ratio:1;border:1px solid #e7c58b22;border-radius:50%;transform:rotateX(72deg) rotateZ(-16deg);box-shadow:0 0 40px #d7a05a0b;animation:orbit 18s linear infinite;pointer-events:none}
+.stage:after{width:min(25vw,310px);border-color:#e7c58b17;animation-duration:25s;animation-direction:reverse}
+@keyframes orbit{to{transform:rotateX(72deg) rotateZ(344deg)}}
+.bottle-wrap{filter:drop-shadow(25px 35px 25px #0009) drop-shadow(0 0 25px #d99a5c18);cursor:grab}
+.bottle-wrap:active{cursor:grabbing}
+.bottle{transition:filter .4s}
+.body{box-shadow:inset 7px 0 8px #f3c89a20,inset -10px 0 15px #0009,0 0 0 1px #d69a6040,0 0 28px color-mix(in srgb,var(--wine) 20%,transparent)}
+.bottle-nav{position:absolute;z-index:5;top:48%;width:42px;height:42px;display:grid;place-items:center;border:1px solid #e6c59b4a;border-radius:50%;background:#170c0bb8;color:#f2d5a7;font-family:Georgia,serif;font-size:30px;line-height:1;backdrop-filter:blur(12px);transition:transform .2s,background .2s,border-color .2s}
+.bottle-nav:hover{transform:scale(1.1);background:#8d4b3d80;border-color:#f1d6a2}
+.bottle-nav.prev{left:7%}.bottle-nav.next{right:7%}
+.wine-switcher{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:16px}
+.wine-choice{display:flex;align-items:center;gap:7px;padding:8px 11px;border-radius:99px;border:1px solid #e6c59b22;background:#fff1;color:#bba18a;font-size:10px;letter-spacing:.04em;transition:all .25s}
+.wine-choice i{display:block;width:7px;height:7px;border-radius:50%;background:#8c334a;box-shadow:0 0 10px currentColor}
+.wine-choice[data-wine="1"] i{background:#bb6876}.wine-choice[data-wine="2"] i{background:#c5b878}
+.wine-choice.active{color:#f7dfb7;border-color:#e2bd7d9c;background:#d5a65b18;box-shadow:0 0 24px #d5a65b12}
+.wine-choice.active i{box-shadow:0 0 12px currentColor}
+.order{position:relative;overflow:hidden}
+.order:before{content:"";position:absolute;top:-80%;left:-40%;width:25%;height:260%;background:#fff8;transform:rotate(25deg);transition:left .55s}
+.order:hover:before{left:130%}
+@media(max-width:800px){.bottle-nav{top:43%;width:34px;height:34px;font-size:25px}.bottle-nav.prev{left:4%}.bottle-nav.next{right:4%}.stage:before{width:58vw}.stage:after{width:46vw}.wine-switcher{margin-top:8px;gap:4px}.wine-choice{padding:7px 9px;font-size:9px}}
+@media(max-width:390px){.wine-choice{padding:6px 7px;gap:4px}.wine-switcher{margin-top:7px}.bottle-nav{width:30px;height:30px}}
+
 </style>
 </head>
 <body>
@@ -67,12 +94,14 @@ button,input{font:inherit}button{cursor:pointer}
      <div class="body"><div class="label"><span class="seal">VINORA · EST. 1987</span><strong id="labelName">PINOT<br>NOIR</strong><span class="ornament"></span><span class="vintage">BOURGOGNE · 2022</span></div></div><div class="base"></div>
     </div>
    </div>
+   <button class="bottle-nav prev" id="prevWine" aria-label="上一款葡萄酒">‹</button><button class="bottle-nav next" id="nextWine" aria-label="下一款葡萄酒">›</button>
   </div>
   <div class="product-info">
    <div class="kicker" id="wineType">SINGLE VINEYARD · FRANCE</div>
    <h1 id="wineName">黑皮诺 · 勃艮第</h1>
    <p id="wineDesc">红樱桃 · 森林气息 · 细腻柔和</p>
    <button class="order" id="orderBtn">下单 · ¥ 268</button>
+   <div class="wine-switcher" role="group" aria-label="切换葡萄酒"><button class="wine-choice active" data-wine="0"><i></i><span>黑皮诺</span></button><button class="wine-choice" data-wine="1"><i></i><span>赤霞珠</span></button><button class="wine-choice" data-wine="2"><i></i><span>长相思</span></button></div>
   </div>
  </section>
  <aside class="chat" aria-label="数字人品酒群聊">
@@ -115,6 +144,13 @@ document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('clic
 document.querySelectorAll('.member').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.member').forEach(x=>x.classList.toggle('active',x===b));role=b.dataset.role;const r=roles[role];addMessage(r.face,r.name,role==='sommelier'?'我来帮你拆解酒款风味、口感与品鉴方法。':role==='grower'?'我来聊聊葡萄品种、产区风土和年份差异。':'我来从食材、烹饪方式和味道平衡给你搭餐建议。')}));
 $('orderBtn').addEventListener('click',()=>{ordered++;const w=wines[current];$('orderBtn').classList.add('done');$('orderBtn').textContent='已加入订单 · ¥ '+w.price;showToast('已将「'+w.name+'」加入体验订单 · ¥ '+w.price);addMessage('🍷','薇诺 · 侍酒师','已为你记下这次体验订单：'+w.name+'，¥'+w.price+'。这是前端交互演示，尚未创建真实订单或发起支付。');setTimeout(()=>{if(current===wines.indexOf(w)){$('orderBtn').classList.remove('done');$('orderBtn').textContent='继续下单 · ¥ '+w.price}},1800)});
 function showToast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400)}
+
+document.querySelectorAll('[data-wine]').forEach(b=>b.addEventListener('click',()=>{renderWine(Number(b.dataset.wine));document.querySelectorAll('.wine-choice').forEach(x=>x.classList.toggle('active',x===b));}));
+$('prevWine').addEventListener('click',()=>{renderWine(current-1);syncWineChoice()});
+$('nextWine').addEventListener('click',()=>{renderWine(current+1);syncWineChoice()});
+function syncWineChoice(){document.querySelectorAll('.wine-choice').forEach(x=>x.classList.toggle('active',Number(x.dataset.wine)===current))}
+document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea'))return;if(e.key==='ArrowLeft'){renderWine(current-1);syncWineChoice()}if(e.key==='ArrowRight'){renderWine(current+1);syncWineChoice()}});
+
 // Drag the bottle horizontally for a tactile, product-showcase feel.
 let down=false,startX=0,baseRot=0,rot=0;const stage=$('stage'),bottle=$('bottleWrap');stage.addEventListener('pointerdown',e=>{down=true;startX=e.clientX;stage.setPointerCapture?.(e.pointerId);bottle.style.animationPlayState='paused'});stage.addEventListener('pointermove',e=>{if(!down)return;rot=Math.max(-32,Math.min(32,baseRot+(e.clientX-startX)*.35));bottle.style.transform='rotateY('+rot+'deg)'});function stopDrag(){if(!down)return;down=false;baseRot=rot;if(Math.abs(baseRot)>18){baseRot=baseRot>0?18:-18;rot=baseRot}bottle.style.animationPlayState='running';bottle.style.transform='rotateY('+baseRot+'deg)'}stage.addEventListener('pointerup',stopDrag);stage.addEventListener('pointercancel',stopDrag);stage.addEventListener('pointerleave',stopDrag);
 </script>
