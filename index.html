@@ -785,7 +785,7 @@ showJourneyStage(0);
  const top=document.querySelector('.journey-top');
  if(top)top.appendChild(toggle);
  function render(){
-  cards.forEach((card,i)=>{const pos=(i-selected+cards.length)%cards.length;card.dataset.pos=String(pos);card.setAttribute('aria-pressed',String(i===selected));});
+  cards.forEach((card,i)=>{const pos=(i-selected+1+cards.length)%cards.length;card.dataset.pos=String(pos);card.setAttribute('aria-pressed',String(i===selected));});
   document.getElementById('drinkSelectedName').textContent=names[selected];
   document.getElementById('drinkSelectedNote').textContent=notes[selected];
  }
