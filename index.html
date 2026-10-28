@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#170b07" />
+<title>COFFEE / Aroma Burst</title>
+<style>
+:root{color-scheme:dark;--cream:#f5e4ca;--muted:#b89a7d;--gold:#e7b86b}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#170b07}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--cream);user-select:none}
+#stage{position:relative;width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 43%,#60351f 0%,#3b2015 30%,#24120d 58%,#100806 100%)}
+#stage:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(0,0,0,.42) 100%);z-index:1}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hud{position:absolute;z-index:2;left:clamp(22px,5vw,76px);top:clamp(22px,5vh,58px);pointer-events:none}
+.eyebrow{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:#d7aa72;opacity:.9}
+h1{margin:12px 0 0;font-size:clamp(24px,4vw,48px);font-weight:450;letter-spacing:-.045em;line-height:1.04}
+.sub{margin-top:12px;font-size:12px;letter-spacing:.12em;color:#c7a88a}
+.brand{position:absolute;z-index:2;right:clamp(22px,5vw,76px);top:clamp(26px,5vh,60px);font-size:11px;letter-spacing:.24em;color:#d8b38d;text-align:right}
+.brand b{display:block;color:#f6e4ce;font-size:14px;font-weight:500;letter-spacing:.28em;margin-bottom:7px}
+.bottom{position:absolute;z-index:2;left:50%;bottom:clamp(24px,5vh,58px);transform:translateX(-50%);display:flex;align-items:center;flex-direction:column;gap:15px;width:min(90%,480px)}
+#trigger{appearance:none;border:1px solid rgba(232,190,133,.5);border-radius:999px;background:rgba(30,15,9,.4);color:#f4dfc4;padding:13px 24px;font:inherit;font-size:11px;letter-spacing:.2em;cursor:pointer;backdrop-filter:blur(12px);transition:background .2s,border-color .2s,transform .2s}
+#trigger:hover{background:rgba(153,94,48,.3);border-color:#e7b86b;transform:translateY(-1px)}
+#trigger:active{transform:scale(.98)}
+.hint{font-size:10px;letter-spacing:.16em;color:#c4a184;text-align:center;opacity:.85}
+kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px;height:23px;margin:0 5px;padding:0 7px;border:1px solid rgba(232,190,133,.3);border-radius:5px;color:#f1d4ad;font:inherit;font-size:10px}
+#status{position:absolute;right:clamp(22px,5vw,76px);bottom:clamp(28px,5vh,62px);z-index:2;font-size:9px;letter-spacing:.22em;color:#c49a70;display:flex;align-items:center;gap:9px}
+.dot{width:5px;height:5px;border-radius:50%;background:#c7a06e;box-shadow:0 0 12px #d5a05c}
+#mute{position:absolute;z-index:3;right:clamp(22px,5vw,76px);top:100px;border:0;background:transparent;color:#c9a98a;font-size:10px;letter-spacing:.12em;cursor:pointer;padding:10px 0}
+#mute:hover{color:#fff0d7}
+#flash{position:absolute;z-index:1;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 47%,rgba(255,205,127,.23),transparent 40%)}
+#stage.burst #flash{animation:flash .8s ease-out}
+@keyframes flash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+@media(max-width:600px){.brand{top:25px}.sub{max-width:220px;line-height:1.7}#mute{top:85px}.bottom{bottom:36px}#status{display:none}}
+@media(prefers-reduced-motion:reduce){#trigger{transition:none}}
+</style>
+</head>
+<body>
+<main id="stage" aria-label="咖啡豆香气粒子互动特效">
+<canvas id="scene" aria-label="旋转咖啡豆与香气粒子"></canvas><div id="flash"></div>
+<div class="hud"><div class="eyebrow">DAY 03 &nbsp; / &nbsp; COFFEE BEAN</div><h1>Freshly roasted.<br>Unfold the aroma.</h1><div class="sub">新鲜烘焙 · 一开袋，香气便有了形状</div></div>
+<div class="brand"><b>AROMA STUDIO</b>LIVE VISUAL EFFECTS / 003</div>
+<button id="mute" type="button" aria-pressed="false">♪ SOUND ON</button>
+<div class="bottom"><button id="trigger" type="button">✦ &nbsp; CRACK THE BEAN</button><div class="hint">口播到「新鲜烘焙」时触发 &nbsp; <kbd>SPACE</kbd> 或点击按钮</div></div>
+<div id="status"><span class="dot"></span><span id="statusText">READY FOR CUE</span></div>
+</main>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js';
+
+const stage=document.querySelector('#stage'), canvas=document.querySelector('#scene');
+const triggerButton=document.querySelector('#trigger'), muteButton=document.querySelector('#mute'), statusText=document.querySelector('#statusText');
+let muted=false, bursting=false, burstStart=0, lastTrigger=0;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,.1,100);
+camera.position.set(0,0,8.5);
+const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+scene.add(new THREE.HemisphereLight(0xffd7ad,0x281009,2.0));
+const key=new THREE.DirectionalLight(0xffd2a0,4.3);key.position.set(-3,4,5);scene.add(key);
+const rim=new THREE.PointLight(0xd47b37,45,15);rim.position.set(3,1,2);scene.add(rim);
+const fill=new THREE.PointLight(0xffe1b0,18,12);fill.position.set(-2,-2,3);scene.add(fill);
+const beanRoot=new THREE.Group();scene.add(beanRoot);
+const halves=new THREE.Group();beanRoot.add(halves);
+const beanMaterial=new THREE.MeshPhysicalMaterial({color:0x512311,roughness:.25,metalness:.08,clearcoat:1,clearcoatRoughness:.19});
+const grooveMaterial=new THREE.MeshStandardMaterial({color:0x1d0c07,roughness:.38,metalness:.03});
+const beanGeo=new THREE.SphereGeometry(1,72,52);
+function makeHalf(side){
+ const group=new THREE.Group();halves.add(group);
+ const geo=beanGeo.clone(),p=geo.attributes.position;
+ for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+  const taper=1-.17*Math.max(0,y);
+  p.setXYZ(i,x*.84*taper,y*1.18,z*.38);
+ }
+ geo.computeVertexNormals();
+ const mesh=new THREE.Mesh(geo,beanMaterial);mesh.scale.set(.79,.99,1);mesh.position.x=side*.34;mesh.position.y=.03;mesh.position.z=0;mesh.rotation.z=side*.14;mesh.scale.x*=.64;
+ group.add(mesh);
+ // The raised inner edge makes the characteristic coffee-bean seam visible.
+ const seamCurve=[];
+ for(let i=0;i<=36;i++){const y=-.88+i/36*1.82;seamCurve.push(new THREE.Vector3(side*(.32+.11*Math.sin(y*3.2)),y,.35*Math.sqrt(Math.max(.05,1-y*y))));}
+ const seamGeo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seamCurve),72,.027,8,false);
+ const seam=new THREE.Mesh(seamGeo,grooveMaterial);group.add(seam);
+ return group;
+}
+const left=makeHalf(-1),right=makeHalf(1);
+const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.25,40,24),new THREE.MeshBasicMaterial({color:0xc77737,transparent:true,opacity:.055,side:THREE.BackSide,depthWrite:false}));
+beanRoot.add(beanGlow);
+beanRoot.rotation.set(-.12,.12,-.28);
+beanRoot.scale.set(1.18,1.38,1.15);
+const dustCount=460, positions=new Float32Array(dustCount*3), colors=new Float32Array(dustCount*3), sizes=new Float32Array(dustCount);
+for(let i=0;i<dustCount;i++){positions[i*3]=(Math.random()-.5)*7;positions[i*3+1]=(Math.random()-.5)*6;positions[i*3+2]=(Math.random()-.5)*1.4;const gold=Math.random()>.53;colors[i*3]=gold?1:.42;colors[i*3+1]=gold?.67:.19;colors[i*3+2]=gold?.3:.07;sizes[i]=Math.random()*.025+.006;}
+const dustGeo=new THREE.BufferGeometry();dustGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));dustGeo.setAttribute('color',new THREE.BufferAttribute(colors,3));dustGeo.setAttribute('size',new THREE.BufferAttribute(sizes,1));
+const dustMat=new THREE.PointsMaterial({size:.026,vertexColors:true,transparent:true,opacity:.42,depthWrite:false,blending:THREE.AdditiveBlending});
+const dust=new THREE.Points(dustGeo,dustMat);scene.add(dust);
+let particles=null;
+function makeBurst(){
+ if(particles){scene.remove(particles);particles.geometry.dispose();particles.material.dispose();}
+ const count=850,pos=new Float32Array(count*3),vel=new Float32Array(count*3),col=new Float32Array(count*3),life=new Float32Array(count),sz=new Float32Array(count);
+ for(let i=0;i<count;i++){
+  const angle=Math.random()*Math.PI*2,spread=.12+Math.random()*.9,speed=1.0+Math.random()*4.5;
+  pos[i*3]=(Math.random()-.5)*.24;pos[i*3+1]=(Math.random()-.5)*.2;pos[i*3+2]=Math.random()*.3;
+  vel[i*3]=Math.cos(angle)*spread*speed*.65;vel[i*3+1]=Math.abs(Math.sin(angle))*speed+1.0+Math.random()*2.3;vel[i*3+2]=(Math.random()-.5)*1.3;
+  const g=Math.random()>.45;col[i*3]=g?1:.48+Math.random()*.22;col[i*3+1]=g?.67:.22+Math.random()*.18;col[i*3+2]=g?.28:.08;
+  life[i]=.35+Math.random()*.48;sz[i]=.018+Math.random()*.05;
+ }
+ const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));geo.setAttribute('size',new THREE.BufferAttribute(sz,1));geo.userData={vel,life,origin:performance.now()/1000};
+ const mat=new THREE.PointsMaterial({size:.045,vertexColors:true,transparent:true,opacity:1,depthWrite:false,blending:THREE.AdditiveBlending});
+ particles=new THREE.Points(geo,mat);particles.position.set(0,-.1,.6);scene.add(particles);
+}
+let audioCtx=null;
+function crackSound(){
+ if(muted)return;
+ try{
+  audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended')audioCtx.resume();
+  const now=audioCtx.currentTime,duration=.085,n= Math.floor(audioCtx.sampleRate*duration);
+  const buffer=audioCtx.createBuffer(1,n,audioCtx.sampleRate),data=buffer.getChannelData(0);
+  for(let i=0;i<n;i++){const t=i/n;data[i]=(Math.random()*2-1)*Math.pow(1-t,3)*.75;}
+  const noise=audioCtx.createBufferSource();noise.buffer=buffer;
+  const filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1700;
+  const gain=audioCtx.createGain();gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.32,now+.004);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+  noise.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);noise.start(now);noise.stop(now+duration);
+  const osc=audioCtx.createOscillator(),og=audioCtx.createGain();osc.type='triangle';osc.frequency.setValueAtTime(210,now);osc.frequency.exponentialRampToValueAtTime(78,now+.07);og.gain.setValueAtTime(.14,now);og.gain.exponentialRampToValueAtTime(.0001,now+.075);osc.connect(og);og.connect(audioCtx.destination);osc.start(now);osc.stop(now+.08);
+ }catch(e){/* Audio is optional; visual effect still works. */}
+}
+function trigger(){
+ const now=performance.now();if(bursting||now-lastTrigger<120)return;lastTrigger=now;
+ bursting=true;burstStart=now/1000;stage.classList.remove('burst');void stage.offsetWidth;stage.classList.add('burst');
+ makeBurst();crackSound();statusText.textContent='AROMA RELEASED';triggerButton.textContent='✦  RELEASE AROMA';
+}
+triggerButton.addEventListener('click',trigger);
+window.addEventListener('keydown',e=>{
+ if(e.code==='Space'&&!e.repeat&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+  const tag=e.target?.tagName?.toLowerCase();if(tag==='input'||tag==='textarea'||tag==='select')return;
+  e.preventDefault();trigger();
+ }
+});
+muteButton.addEventListener('click',()=>{muted=!muted;muteButton.textContent=muted?'♪ SOUND OFF':'♪ SOUND ON';muteButton.setAttribute('aria-pressed',String(muted));});
+const clock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);const t=clock.getElapsedTime();
+ if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.34;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.08;beanRoot.rotation.z=-.28+Math.sin(t*.24)*.035;}
+ if(bursting){
+  const p=Math.min(1,(t-burstStart));const ease=p<.5?1-Math.pow(1-p*2,3):Math.pow((p-.5)*2,3);
+  left.position.x=-.42*ease;right.position.x=.42*ease;left.rotation.z=.12*ease;right.rotation.z=-.12*ease;
+  beanRoot.scale.setScalar(1.0+Math.sin(p*Math.PI)*.08);beanGlow.material.opacity=.055+.2*Math.sin(p*Math.PI);
+  if(p>=.8){bursting=false;left.position.set(0,0,0);right.position.set(0,0,0);left.rotation.z=0;right.rotation.z=0;beanRoot.scale.set(1.18,1.38,1.15);beanGlow.material.opacity=.055;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
+ }
+ if(particles){
+  const geo=particles.geometry,arr=geo.attributes.position.array,vel=geo.userData.vel,life=geo.userData.life,age=t-geo.userData.origin;
+  for(let i=0;i<life.length;i++){const j=i*3,lt=age/life[i];if(lt<1){arr[j]+=vel[j]*.008;arr[j+1]+=vel[j+1]*.008;arr[j+2]+=vel[j+2]*.008;vel[j+1]-=.035;}else{arr[j]=0;arr[j+1]=-9;arr[j+2]=0;}}
+  geo.attributes.position.needsUpdate=true;particles.material.opacity=Math.max(0,1-age/.9);
+  if(age>.95){scene.remove(particles);particles.geometry.dispose();particles.material.dispose();particles=null;}
+ }
+ const d=dustGeo.attributes.position.array;for(let i=0;i<dustCount;i++){d[i*3+1]+=.0018+(i%5)*.00015;if(d[i*3+1]>3.2)d[i*3+1]=-3.2;d[i*3]+=(Math.sin(t*.4+i)*.0003);}
+ dustGeo.attributes.position.needsUpdate=true;
+ renderer.render(scene,camera);
+}
+animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>
