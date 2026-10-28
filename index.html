@@ -465,7 +465,13 @@ function crackSound(){
 function trigger(){
  const now=performance.now();if(bursting||now-lastTrigger<120)return;lastTrigger=now;
  bursting=true;burstStart=clock.getElapsedTime();stage.classList.remove('burst');void stage.offsetWidth;stage.classList.add('burst');
- makeBurst();crackSound();statusText.textContent='AROMA RELEASED';triggerButton.textContent='✦  RELEASE AROMA';
+ makeBurst();crackSound();statusText.textContent='AROMA RELEASED';triggerButton.textContent='✦  REFORMING AROMA';
+ if(window.gsap){
+  gsap.fromTo('#flash',{opacity:0},{opacity:1,duration:.18,yoyo:true,repeat:1,ease:'power2.out'});
+  gsap.fromTo('.heat-haze',{scale:1,opacity:.18},{scale:1.34,opacity:.58,duration:.8,yoyo:true,repeat:1,ease:'sine.inOut'});
+  gsap.to(beanMesh.rotation,{y:beanMesh.rotation.y+Math.PI*2,duration:2,ease:'power2.inOut'});
+  gsap.fromTo(beanMesh.scale,{x:beanMesh.scale.x,y:beanMesh.scale.y,z:beanMesh.scale.z},{x:beanMesh.scale.x*.72,y:beanMesh.scale.y*1.12,z:beanMesh.scale.z,duration:.48,yoyo:true,repeat:3,ease:'power2.inOut'});
+ }
 }
 triggerButton.addEventListener('click',trigger);
 window.addEventListener('keydown',e=>{
@@ -476,6 +482,10 @@ window.addEventListener('keydown',e=>{
 });
 muteButton.addEventListener('click',()=>{muted=!muted;muteButton.textContent=muted?'♪ SOUND OFF':'♪ SOUND ON';muteButton.setAttribute('aria-pressed',String(muted));});
 const clock=new THREE.Clock();
+
+// Pointer parallax: the hero object, light field and dust respond with different inertia.
+let pointerX=0,pointerY=0,parallaxX=0,parallaxY=0;
+window.addEventListener('pointermove',e=>{pointerX=(e.clientX/innerWidth-.5)*2;pointerY=(e.clientY/innerHeight-.5)*2;});
 function animate(){
  requestAnimationFrame(animate);const t=clock.getElapsedTime();
  beanMaterial.color.lerp(targetBeanColor,0.025);
@@ -494,7 +504,9 @@ function animate(){
   geo.attributes.position.needsUpdate=true;particles.material.opacity=Math.max(0,1-age/.9);
   if(age>.95){scene.remove(particles);particles.geometry.dispose();particles.material.dispose();particles=null;}
  }
- const d=dustGeo.attributes.position.array;for(let i=0;i<dustCount;i++){d[i*3+1]+=.0018+(i%5)*.00015;if(d[i*3+1]>3.2)d[i*3+1]=-3.2;d[i*3]+=(Math.sin(t*.4+i)*.0003);}
+ parallaxX+=(pointerX-parallaxX)*.025;parallaxY+=(pointerY-parallaxY)*.025;
+ if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.23+parallaxX*.13;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.055-parallaxY*.08;}
+ const d=dustGeo.attributes.position.array;for(let i=0;i<dustCount;i++){d[i*3+1]+=.0018+(i%5)*.00015;if(d[i*3+1]>3.2)d[i*3+1]=-3.2;d[i*3]+=(Math.sin(t*.4+i)*.0003)+parallaxX*.0008;d[i*3+2]+=(-parallaxY*.0008-d[i*3+2])*.01;}
  dustGeo.attributes.position.needsUpdate=true;
  renderer.render(scene,camera);
 }
