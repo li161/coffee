@@ -47,6 +47,59 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px
 @media(max-width:850px){#assistant{right:12px;top:auto;bottom:95px;transform:none;width:min(330px,calc(100vw - 24px));max-height:48vh;padding:12px;gap:9px}.avatar{width:40px;height:40px;flex-basis:40px}.assistant-head{gap:9px}#chatLog{max-height:13vh;min-height:64px}.quick-list{display:none}.hud{max-width:48vw}h1{font-size:clamp(22px,5vw,36px)}.brand{display:none}#mute{right:auto;left:22px;top:auto;bottom:28px}}
 @media(max-width:480px){.hud{top:20px;left:20px;max-width:58vw}.eyebrow{font-size:8px}h1{font-size:22px}.sub{font-size:10px}#assistant{bottom:85px;max-height:47vh}.bottom{bottom:20px;left:22px;transform:none;width:auto;align-items:flex-start}.hint{display:none}#trigger{padding:10px 14px;font-size:9px}#chatLog{max-height:10vh}}
 
+
+/* Mobile H5: keep the bean visible above the compact chat dock */
+html,body{min-height:100%;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+button,input{touch-action:manipulation}
+#scene{touch-action:manipulation}
+#chatInput{user-select:text;-webkit-user-select:text}
+@media(max-width:850px){
+ #stage{height:100dvh;min-height:560px}
+ .hud{top:max(18px,env(safe-area-inset-top));left:18px;max-width:62vw}
+ .eyebrow{letter-spacing:.2em}
+ .sub{max-width:240px;line-height:1.55;letter-spacing:.04em}
+ #assistant{right:12px;left:12px;bottom:calc(76px + env(safe-area-inset-bottom));width:auto;max-height:min(42dvh,340px);overflow:hidden;border-radius:18px;padding:12px;gap:8px}
+ #chatLog{min-height:46px;max-height:clamp(54px,11dvh,100px)}
+ .bubble{font-size:12px;line-height:1.55;padding:9px 10px}
+ .quick-list{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px}
+ .quick{flex:1 1 auto;padding:7px 8px;font-size:10px}
+ .quick-label{font-size:8px}
+ #chatForm{flex-shrink:0}
+ #chatInput{font-size:16px;padding:8px 6px}
+ #sendChat{padding:0 12px}
+ .assistant-role{font-size:9px}
+ .roast-row{font-size:9px}
+ .bottom{bottom:calc(14px + env(safe-area-inset-bottom));left:14px;transform:none;width:auto;align-items:flex-start;gap:0}
+ #trigger{padding:10px 13px;font-size:9px;letter-spacing:.12em}
+ .hint{display:none}
+ #mute{left:auto;right:16px;top:auto;bottom:calc(22px + env(safe-area-inset-bottom));font-size:9px;padding:9px 10px}
+ .brand{display:none}
+}
+@media(max-width:480px){
+ .hud{top:max(16px,env(safe-area-inset-top));left:16px;max-width:72vw}
+ h1{font-size:clamp(21px,6vw,28px);line-height:1.02;margin-top:9px}
+ .sub{font-size:10px;margin-top:8px;max-width:200px}
+ #assistant{bottom:calc(68px + env(safe-area-inset-bottom));max-height:min(43dvh,330px);padding:10px;gap:7px}
+ .assistant-head{gap:8px}
+ .avatar{width:36px;height:36px;flex-basis:36px;font-size:19px}
+ .assistant-name{font-size:11px}
+ .assistant-role{font-size:8px}
+ .live-pill{font-size:8px;padding:4px 6px}
+ #chatLog{max-height:clamp(48px,9dvh,76px);min-height:44px}
+ .quick-list{gap:5px}
+ .quick{font-size:9px;padding:6px 7px}
+ .quick-label{margin-top:0}
+ #apiNote{font-size:8px}
+ #trigger{font-size:8px;padding:10px 11px}
+ #mute{font-size:8px;padding:9px}
+}
+@media(max-height:700px) and (max-width:850px){
+ #assistant{max-height:37dvh;gap:6px}
+ #chatLog{max-height:7dvh;min-height:38px}
+ .quick-list{display:none}
+ .hud .sub{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -161,7 +214,12 @@ const left=makeHalf(-1),right=makeHalf(1);
 const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.25,40,24),new THREE.MeshBasicMaterial({color:0xc77737,transparent:true,opacity:.055,side:THREE.BackSide,depthWrite:false}));
 beanRoot.add(beanGlow);
 beanRoot.rotation.set(-.12,.12,-.28);
-beanRoot.scale.set(1.18,1.38,1.15);
+function fitBeanForViewport(){
+ const mobile=innerWidth<=850;
+ beanRoot.position.y=mobile?.72:0;
+ beanRoot.scale.set(mobile?1.0:1.18,mobile?1.17:1.38,mobile?1.0:1.15);
+}
+fitBeanForViewport();
 const dustCount=460, positions=new Float32Array(dustCount*3), colors=new Float32Array(dustCount*3), sizes=new Float32Array(dustCount);
 for(let i=0;i<dustCount;i++){positions[i*3]=(Math.random()-.5)*7;positions[i*3+1]=(Math.random()-.5)*6;positions[i*3+2]=(Math.random()-.5)*1.4;const gold=Math.random()>.53;colors[i*3]=gold?1:.42;colors[i*3+1]=gold?.67:.19;colors[i*3+2]=gold?.3:.07;sizes[i]=Math.random()*.025+.006;}
 const dustGeo=new THREE.BufferGeometry();dustGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));dustGeo.setAttribute('color',new THREE.BufferAttribute(colors,3));dustGeo.setAttribute('size',new THREE.BufferAttribute(sizes,1));
@@ -220,7 +278,7 @@ function animate(){
   const p=Math.min(1,(t-burstStart));const ease=p<.5?1-Math.pow(1-p*2,3):Math.pow((p-.5)*2,3);
   left.position.x=-.42*ease;right.position.x=.42*ease;left.rotation.z=.12*ease;right.rotation.z=-.12*ease;
   beanRoot.scale.setScalar(1.0+Math.sin(p*Math.PI)*.08);beanGlow.material.opacity=.055+.2*Math.sin(p*Math.PI);
-  if(p>=.8){bursting=false;left.position.set(0,0,0);right.position.set(0,0,0);left.rotation.z=0;right.rotation.z=0;beanRoot.scale.set(1.18,1.38,1.15);beanGlow.material.opacity=.055;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
+  if(p>=.8){bursting=false;left.position.set(0,0,0);right.position.set(0,0,0);left.rotation.z=0;right.rotation.z=0;fitBeanForViewport();beanGlow.material.opacity=.055;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
  }
  if(particles){
   const geo=particles.geometry,arr=geo.attributes.position.array,vel=geo.userData.vel,life=geo.userData.life,age=t-geo.userData.origin;
@@ -233,7 +291,7 @@ function animate(){
  renderer.render(scene,camera);
 }
 animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);fitBeanForViewport();});
 </script>
 </body>
 </html>
