@@ -80,6 +80,19 @@ button,input{font:inherit}button{cursor:pointer}
 @media(max-width:800px){.bottle-nav{top:43%;width:34px;height:34px;font-size:25px}.bottle-nav.prev{left:4%}.bottle-nav.next{right:4%}.stage:before{width:58vw}.stage:after{width:46vw}.wine-switcher{margin-top:8px;gap:4px}.wine-choice{padding:7px 9px;font-size:9px}}
 @media(max-width:390px){.wine-choice{padding:6px 7px;gap:4px}.wine-switcher{margin-top:7px}.bottle-nav{width:30px;height:30px}}
 
+
+/* Three-bottle spatial carousel inspired by the reference */
+.stage{overflow:visible;transform-style:preserve-3d}
+.stage .bottle-wrap{position:absolute;left:50%;top:50%;margin:0;transform-style:preserve-3d;transform-origin:center center;will-change:transform,opacity;transition:transform .72s cubic-bezier(.2,.75,.2,1),opacity .5s,filter .5s;animation:carouselFloat 4.8s ease-in-out infinite}
+@keyframes carouselFloat{0%,100%{margin-top:0}50%{margin-top:-7px}}
+.stage .bottle-wrap.is-center{z-index:4;opacity:1;pointer-events:auto;filter:drop-shadow(24px 35px 25px #0009) drop-shadow(0 0 28px #d99a5c22)}
+.stage .bottle-wrap.is-left,.stage .bottle-wrap.is-right{z-index:2;opacity:.78;cursor:pointer;filter:drop-shadow(12px 24px 18px #0009) saturate(.82)}
+.stage .bottle-wrap.is-left .label,.stage .bottle-wrap.is-right .label{filter:brightness(.85)}
+.stage .bottle-wrap .label strong{font-size:clamp(12px,1.6vw,20px)}
+.stage .bottle-wrap.is-center .label strong{font-size:clamp(16px,2.1vw,25px)}
+.stage .bottle-wrap .label .seal{font-size:7px}.stage .bottle-wrap .label .vintage{font-size:8px}
+@media(max-width:800px){.stage .bottle-wrap{height:clamp(210px,31vh,280px);width:clamp(90px,21vw,130px)}.stage .bottle-wrap.is-center .label strong{font-size:15px}.stage .bottle-wrap .label strong{font-size:11px}}
+
 </style>
 </head>
 <body>
@@ -135,7 +148,11 @@ const wines=[
 ];
 let current=0,role='sommelier',ordered=0,toastTimer;
 const $=id=>document.getElementById(id),log=$('log');
-function renderWine(i){current=(i+wines.length)%wines.length;const w=wines[current];$('wineName').textContent=w.name;$('labelName').innerHTML=w.en;$('wineType').textContent=w.type;$('wineDesc').textContent=w.desc;$('orderBtn').textContent='下单 · ¥ '+w.price;document.documentElement.style.setProperty('--wine',w.color);document.documentElement.style.setProperty('--winehi',w.hi);const bottle=$('bottleWrap');bottle.animate([{opacity:.65,transform:'rotateY(-14deg) translateY(8px) scale(.97)'},{opacity:1,transform:'rotateY(0deg) translateY(0) scale(1)'}],{duration:360,easing:'cubic-bezier(.2,.8,.2,1)'});addMessage('🍷','薇诺 · 侍酒师','我把当前酒款切换为「'+w.name+'」。'+w.profile);}
+const stage=$('stage');const mainBottle=$('bottleWrap');const bottleCards=[mainBottle];
+for(let n=1;n<3;n++){const clone=mainBottle.cloneNode(true);clone.removeAttribute('id');clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));clone.dataset.carouselClone='true';clone.tabIndex=0;stage.appendChild(clone);bottleCards.push(clone)}
+function paintBottle(card,w,idx){card.dataset.wineIndex=String(idx);card.querySelector('.body').style.background='linear-gradient(90deg,#160b08 0%,'+w.color+' 12%,'+w.hi+' 36%,'+w.color+' 59%,#35130e 84%,#100807 100%)';card.querySelector('.neck').style.background='linear-gradient(90deg,#210c16,'+w.color+' 19%,'+w.hi+' 34%,'+w.color+' 72%,#1b0b12)';card.querySelector('.shoulders').style.background='linear-gradient(90deg,#1c100c,'+w.color+' 20%,'+w.hi+' 38%,'+w.color+' 70%,#130a08)';card.querySelector('.base').style.background='linear-gradient(90deg,#1a0b08,'+w.color+' 28%,'+w.hi+' 48%,#32110c 80%,#100706)';card.querySelector('.label strong').innerHTML=w.en;card.querySelector('.label .vintage').textContent=w.region.toUpperCase()+' · 2022'}
+function layoutCarousel(){bottleCards.forEach(card=>{const delta=(Number(card.dataset.wineIndex)-current+wines.length)%wines.length;card.classList.remove('is-center','is-left','is-right');if(delta===0){card.classList.add('is-center');card.style.transform='translate(-50%,-50%) translateZ(80px) scale(1)';card.style.zIndex='4';card.style.opacity='1'}else if(delta===1){card.classList.add('is-right');card.style.transform='translate(-8%,-47%) translateZ(-150px) rotateY(-20deg) scale(.72)';card.style.zIndex='2';card.style.opacity='.76'}else{card.classList.add('is-left');card.style.transform='translate(-92%,-47%) translateZ(-150px) rotateY(20deg) scale(.72)';card.style.zIndex='2';card.style.opacity='.76'}})}
+function renderWine(i,announce=true){current=(i+wines.length)%wines.length;const w=wines[current];$('wineName').textContent=w.name;$('labelName').innerHTML=w.en;$('wineType').textContent=w.type;$('wineDesc').textContent=w.desc;$('orderBtn').textContent='下单 · ¥ '+w.price;document.documentElement.style.setProperty('--wine',w.color);document.documentElement.style.setProperty('--winehi',w.hi);bottleCards.forEach((card,n)=>paintBottle(card,wines[(current+n)%wines.length],(current+n)%wines.length));layoutCarousel();syncWineChoice();if(announce)addMessage('🍷','薇诺 · 侍酒师','我把当前酒款切换为「'+w.name+'」。'+w.profile)}
 const roles={sommelier:{face:'🍷',name:'薇诺 · 侍酒师'},grower:{face:'🍇',name:'路易 · 产区顾问'},chef:{face:'🍽️',name:'米娅 · 搭餐主厨'}};
 function addMessage(face,name,text,mine=false){const row=document.createElement('div');row.className='msg'+(mine?' mine':'');if(!mine){const icon=document.createElement('div');icon.className='msg-face';icon.textContent=face;row.append(icon)}const content=document.createElement('div');content.className='msg-content';if(!mine){const n=document.createElement('div');n.className='msg-name';n.textContent=name;content.append(n)}const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;content.append(bubble);row.append(content);log.append(row);log.scrollTop=log.scrollHeight}
 function answer(q){const w=wines[current],s=q.toLowerCase();if(/搭配|搭餐|菜|吃|食物/.test(q)){return '米娅 · 搭餐主厨：'+(current===2?'试试柠檬烤鱼、鲜虾或山羊奶酪，别让厚重酱汁盖过清爽酸度。':current===1?'牛排、烤羊排或熟成硬质奶酪都很合适，蛋白质和脂肪能柔化单宁。':'烤鸡、菌菇意面或半熟金枪鱼都值得一试，避免太辣的调味。')+' 当然，最终还是以你的口味为准。'}if(/比较|区别|赤霞珠|黑皮诺|品种/.test(q)){return '路易 · 产区顾问：赤霞珠通常更有结构、黑色水果和单宁；黑皮诺通常更轻盈，红色水果与细腻香气更突出。产区、年份和酿造方式也会明显影响风格。'}if(/价格|贵|多少钱|下单|购买/.test(q)){return '薇诺 · 侍酒师：当前展示的是「'+w.name+'」，页面标价 ¥'+w.price+'。你可以点下方的下单按钮体验下单流程；真实支付尚未接入。'}if(/风味|香气|口感|味道/.test(q)){return '薇诺 · 侍酒师：'+w.profile+' 你可以先闻香，再小口品尝，留意入口酸度、单宁和咽下后的余味。'}if(/产区|哪里|法国|勃艮第|波尔多/.test(q)){return '路易 · 产区顾问：这款酒的展示产区是'+w.region+'。气候、土壤、地形和酿酒者选择都会影响风格；没有具体酒庄信息时，不宜把产区描述当成这瓶酒的完整来源证明。'}return '薇诺 · 侍酒师：关于「'+q+'」，我们可以从风味、产区或搭餐继续聊。当前酒款是'+w.name+'——'+w.profile}
@@ -145,14 +162,16 @@ document.querySelectorAll('.member').forEach(b=>b.addEventListener('click',()=>{
 $('orderBtn').addEventListener('click',()=>{ordered++;const w=wines[current];$('orderBtn').classList.add('done');$('orderBtn').textContent='已加入订单 · ¥ '+w.price;showToast('已将「'+w.name+'」加入体验订单 · ¥ '+w.price);addMessage('🍷','薇诺 · 侍酒师','已为你记下这次体验订单：'+w.name+'，¥'+w.price+'。这是前端交互演示，尚未创建真实订单或发起支付。');setTimeout(()=>{if(current===wines.indexOf(w)){$('orderBtn').classList.remove('done');$('orderBtn').textContent='继续下单 · ¥ '+w.price}},1800)});
 function showToast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2400)}
 
-document.querySelectorAll('[data-wine]').forEach(b=>b.addEventListener('click',()=>{renderWine(Number(b.dataset.wine));document.querySelectorAll('.wine-choice').forEach(x=>x.classList.toggle('active',x===b));}));
-$('prevWine').addEventListener('click',()=>{renderWine(current-1);syncWineChoice()});
-$('nextWine').addEventListener('click',()=>{renderWine(current+1);syncWineChoice()});
+document.querySelectorAll('.wine-choice').forEach(b=>b.addEventListener('click',()=>renderWine(Number(b.dataset.wine))));
+$('prevWine').addEventListener('click',()=>renderWine(current-1));
+$('nextWine').addEventListener('click',()=>renderWine(current+1));
+bottleCards.forEach(card=>{card.addEventListener('click',()=>{const idx=Number(card.dataset.wineIndex);if(idx!==current)renderWine(idx)});card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();renderWine(Number(card.dataset.wineIndex))}})});
+renderWine(0,false);
 function syncWineChoice(){document.querySelectorAll('.wine-choice').forEach(x=>x.classList.toggle('active',Number(x.dataset.wine)===current))}
 document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea'))return;if(e.key==='ArrowLeft'){renderWine(current-1);syncWineChoice()}if(e.key==='ArrowRight'){renderWine(current+1);syncWineChoice()}});
 
 // Drag the bottle horizontally for a tactile, product-showcase feel.
-let down=false,startX=0,baseRot=0,rot=0;const stage=$('stage'),bottle=$('bottleWrap');stage.addEventListener('pointerdown',e=>{down=true;startX=e.clientX;stage.setPointerCapture?.(e.pointerId);bottle.style.animationPlayState='paused'});stage.addEventListener('pointermove',e=>{if(!down)return;rot=Math.max(-32,Math.min(32,baseRot+(e.clientX-startX)*.35));bottle.style.transform='rotateY('+rot+'deg)'});function stopDrag(){if(!down)return;down=false;baseRot=rot;if(Math.abs(baseRot)>18){baseRot=baseRot>0?18:-18;rot=baseRot}bottle.style.animationPlayState='running';bottle.style.transform='rotateY('+baseRot+'deg)'}stage.addEventListener('pointerup',stopDrag);stage.addEventListener('pointercancel',stopDrag);stage.addEventListener('pointerleave',stopDrag);
+let down=false,startX=0,baseRot=0,rot=0;const bottle=$('bottleWrap');stage.addEventListener('pointerdown',e=>{down=true;startX=e.clientX;stage.setPointerCapture?.(e.pointerId);bottle.style.animationPlayState='paused'});stage.addEventListener('pointermove',e=>{if(!down)return;rot=Math.max(-32,Math.min(32,baseRot+(e.clientX-startX)*.35));bottle.querySelector('.bottle').style.transform='rotateY('+rot+'deg)'});function stopDrag(){if(!down)return;down=false;baseRot=rot;if(Math.abs(baseRot)>18){baseRot=baseRot>0?18:-18;rot=baseRot}bottle.style.animationPlayState='running';bottle.querySelector('.bottle').style.transform='rotateY('+baseRot+'deg)'}stage.addEventListener('pointerup',stopDrag);stage.addEventListener('pointercancel',stopDrag);stage.addEventListener('pointerleave',stopDrag);
 </script>
 </body>
 </html>
