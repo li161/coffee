@@ -4,7 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#170b07" />
-<title>COFFEE / Aroma Burst</title>
+<title>COFFEE — The Three-Year Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:dark;--cream:#f5e4ca;--muted:#b89a7d;--gold:#e7b86b}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#170b07}
@@ -144,23 +145,122 @@ h1{text-shadow:0 0 34px #ffb86c20,0 2px 24px #0008}
 #stage:after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:linear-gradient(90deg,#0b0503a8 0%,transparent 28%,transparent 66%,#0b05036b 100%),linear-gradient(0deg,#0a0504a8 0%,transparent 28%,transparent 78%,#0a050455 100%)}
 @media(max-width:850px){.light-leak{inset:-4%;background:radial-gradient(ellipse at 50% 32%,#d77a3526 0%,transparent 34%),radial-gradient(ellipse at 48% 48%,#f2bd7718 0%,transparent 46%)}}
 @media(prefers-reduced-motion:reduce){#stage,.orbit,.avatar,.avatar:after,.hud,.brand,#status .dot{animation:none!important}}
+
+/* CINEMATIC REBUILD — layered light, glass, tactile typography and caliper timeline */
+:root{--cream:#f5e7d3;--muted:#b9a08a;--gold:#e9b978;--amber:#e9a65b}
+body{font-family:Manrope,ui-sans-serif,system-ui,sans-serif;background:#1b0c07}
+#stage{background:radial-gradient(ellipse at 45% 44%,#60351f 0%,#3b2015 31%,#24120d 61%,#100806 100%)}
+#stage:before{background:radial-gradient(ellipse at 47% 46%,transparent 18%,#09040230 56%,#080302c9 100%);z-index:2}
+#stage:after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:linear-gradient(90deg,#100704a8,transparent 34%,transparent 67%,#1007048c),linear-gradient(0deg,#100704bb,transparent 28%,transparent 78%,#10070470)}
+#scene{z-index:1}
+.volume-beam{position:absolute;z-index:2;pointer-events:none;left:-12%;top:-22%;width:72%;height:110%;transform:rotate(24deg);transform-origin:top left;opacity:.44;filter:blur(8px);mix-blend-mode:screen;background:linear-gradient(180deg,transparent 0%,#f7d6a50a 8%,#f6d0a51c 22%,#d9904a0b 62%,transparent 100%);clip-path:polygon(0 0,28% 0,100% 100%,0 74%);animation:beamBreath 9s ease-in-out infinite alternate}
+.volume-beam:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(176deg,transparent 0 24px,#f9d9ae09 25px 27px,transparent 29px 58px);filter:blur(13px)}
+@keyframes beamBreath{from{opacity:.28;transform:rotate(21deg) translateX(-1%)}to{opacity:.56;transform:rotate(26deg) translateX(2%)}}
+.heat-haze{position:absolute;z-index:2;left:28%;top:18%;width:44%;height:60%;pointer-events:none;opacity:.18;filter:blur(22px);background:radial-gradient(ellipse at 50% 45%,#e7a15a32,transparent 62%);animation:hazeDrift 5s ease-in-out infinite alternate}
+@keyframes hazeDrift{from{transform:translate3d(-1%,1%,0) scale(.96);opacity:.12}to{transform:translate3d(2%,-2%,0) scale(1.08);opacity:.27}}
+.light-leak{z-index:2;opacity:.8}
+.grain-overlay{z-index:7;opacity:.085}
+.hud{z-index:4;left:clamp(28px,6vw,92px);top:clamp(28px,7vh,78px);max-width:560px}
+.eyebrow{font:10px 'DM Mono',monospace;letter-spacing:.27em;color:#e3b77f}
+h1{font:500 clamp(40px,5.5vw,76px)/.99 'Playfair Display',Georgia,serif;letter-spacing:-.045em;text-shadow:0 1px #fff2d52c,0 0 34px #e9ad6533;background:linear-gradient(120deg,#fff1d9 0%,#d6b18a 48%,#fff0d7 70%,#bd8b5a 100%);background-clip:text;-webkit-background-clip:text;color:transparent}
+h1 em{font-weight:500;color:transparent}
+.sub{font-size:12px;letter-spacing:.08em;color:#d5b89a}
+.brand{z-index:4;font:10px 'DM Mono',monospace;letter-spacing:.17em;color:#d2ad87}
+.brand b{font:500 12px 'DM Mono',monospace;letter-spacing:.24em}
+#storyPanel{z-index:5;left:clamp(28px,6vw,92px);bottom:clamp(92px,13vh,142px);width:min(470px,38vw);padding:20px 22px 14px;border:1px solid #f1d6b31e;border-radius:18px;background:linear-gradient(135deg,#f8e0c20c,#4b2a1b49 48%,#1b0d08c9);backdrop-filter:blur(30px) saturate(135%);-webkit-backdrop-filter:blur(30px) saturate(135%);box-shadow:inset 0 1px #fff3,0 24px 90px #0006}
+.story-kicker{font:9px 'DM Mono',monospace;letter-spacing:.14em;color:#d6b084}
+#storyCopy{font-size:12px;line-height:1.9;color:#f0dfca;min-height:69px;margin:13px 0 20px}
+.caliper{position:relative;padding-top:8px}
+.caliper-track{position:relative;height:12px;margin:0 8px 8px;border-top:1px solid #e8c89a5e}
+.caliper-track:before{content:"";position:absolute;inset:-4px 0 auto;height:7px;background:repeating-linear-gradient(90deg,#d9b78a70 0 1px,transparent 1px 10px);opacity:.48}
+.caliper-progress{position:absolute;left:0;top:-1px;height:1px;width:0;background:#ffdaa2;box-shadow:0 0 10px #ffbf6c;transition:width .65s cubic-bezier(.2,.8,.2,1)}
+.caliper-cursor{position:absolute;top:-7px;left:0;width:1px;height:19px;background:#ffe5b8;box-shadow:0 0 12px 2px #f5b95d;transition:left .65s cubic-bezier(.2,.8,.2,1)}
+.caliper-ticks{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.story-step{position:relative;display:flex;flex-direction:column;gap:5px;padding:8px 3px 7px;border:0;border-radius:0;background:transparent;color:#a78d75;text-align:left;cursor:pointer;transition:color .3s}
+.story-step:before{content:"";position:absolute;top:-12px;left:7px;width:1px;height:7px;background:#c6a17a80}
+.story-step i{font:9px 'DM Mono',monospace;font-style:normal;color:#94775c}
+.story-step b{font-size:12px;font-weight:500}
+.story-step small{font:8px 'DM Mono',monospace;letter-spacing:.04em;color:#826951}
+.story-step.active{background:transparent;color:#ffe3bd;transform:none}
+.story-step.active i,.story-step.active small{color:#e3b978}
+.story-foot{font:8px 'DM Mono',monospace;letter-spacing:.1em;border-top:1px solid #f6e3c716;color:#927960}
+#assistant{z-index:6;right:clamp(20px,3.6vw,54px);width:min(360px,29vw);padding:24px 21px 20px;border:1px solid #f1d6b324;border-radius:24px;background:linear-gradient(145deg,#f5dfc20c,#c99b7020 24%,#24130df0 100%);backdrop-filter:blur(36px) saturate(145%);-webkit-backdrop-filter:blur(36px) saturate(145%);box-shadow:inset 0 1px #fff3,0 30px 100px #0008}
+#assistant:before{content:"";position:absolute;pointer-events:none;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(140deg,#fff0d72b,transparent 28%,#d49b6220 75%,#fff1d20a);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.assistant-head{gap:14px}
+.avatar{position:relative;width:58px;height:58px;flex-basis:58px;background:radial-gradient(circle at 35% 25%,#f8dbad,#98613d 52%,#2c160d);border:1px solid #f0c58a88;box-shadow:0 0 0 4px #dca45a0c,0 0 24px #e2a65a35}
+.avatar:before{content:"";position:absolute;inset:-7px;border-radius:50%;border:1px solid #e9bc7760;border-top-color:#fff0c6;box-shadow:0 0 18px #e3a95724;animation:haloSpin 12s linear infinite}
+.avatar:after{content:"";position:absolute;inset:-12px;border-radius:50%;border:1px dashed #d8a76c38;animation:haloSpin 24s linear infinite reverse}
+@keyframes haloSpin{to{transform:rotate(360deg)}}
+#assistant[data-state="thinking"] .avatar{box-shadow:0 0 0 5px #e0b16b18,0 0 32px #f4b96855;animation:thinkingPulse 1.2s ease-in-out infinite}
+#assistant[data-state="done"] .avatar{box-shadow:0 0 0 4px #e0b16b0b,0 0 20px #e2a65a2c}
+@keyframes thinkingPulse{50%{filter:brightness(1.25)}}
+.assistant-name{font-size:13px;letter-spacing:.1em}
+.live-pill{border-color:#d2b17c44;color:#e1c99f;background:#e5b26a0a}
+#chatLog{scrollbar-color:#b78959 transparent}
+.bubble{font-size:12px;line-height:1.85}
+.bubble.bot{background:#ffffff06;border:0;border-left:1px solid #d4a86a65;border-radius:0 10px 10px 0;padding:9px 12px}
+.bubble.user{background:#b97b3c17;border:1px solid #e5bb8d25}
+.quick{border-radius:999px;background:#fff1e007;border-color:#f1d7b31e;padding:9px 12px}
+.quick:hover{background:#e6b06d18;border-color:#e7bd7c65}
+#chatForm{border-radius:999px;border-color:#e4c18c35;background:#14090468;padding:4px 5px 4px 10px}
+#chatInput{font-family:Manrope,sans-serif}
+#sendChat{border-radius:999px;background:linear-gradient(135deg,#f1cf9a,#b77b49);padding:9px 15px}
+.bottom{z-index:5;bottom:clamp(23px,4vh,48px)}
+#trigger{position:relative;overflow:hidden;border:1px solid #f4d29c88;border-radius:999px;background:linear-gradient(125deg,#6f3d20d9,#211008e8);box-shadow:0 0 0 5px #e2a95b08,inset 0 1px #fff4,0 0 28px #d58b3c24;color:#fff0d8;padding:15px 30px;font:10px 'DM Mono',monospace;letter-spacing:.2em;animation:breathButton 3.2s ease-in-out infinite}
+#trigger:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,#fff4 50%,transparent 72%);transform:translateX(-120%);animation:buttonSweep 5s ease-in-out infinite}
+@keyframes breathButton{50%{box-shadow:0 0 0 8px #e2a95b08,inset 0 1px #fff5,0 0 40px #d58b3c45;transform:translateY(-1px)}}
+@keyframes buttonSweep{0%,60%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+#flash{z-index:8}
+#stage.burst .heat-haze{opacity:.55;filter:blur(30px);transform:scale(1.18)}
+#stage.burst .volume-beam{opacity:.72}
+@media(max-width:850px){
+ .volume-beam{left:-40%;top:-5%;width:100%;height:70%;opacity:.3}
+ .heat-haze{left:18%;top:16%;width:64%;height:38%}
+ .hud{left:20px;top:max(22px,env(safe-area-inset-top));max-width:74vw}
+ h1{font-size:clamp(34px,8vw,52px)}
+ #storyPanel{left:14px;bottom:calc(76px + env(safe-area-inset-bottom) + min(42dvh,340px) + 10px);width:calc(100vw - 28px);padding:12px 14px 10px}
+ #storyCopy{font-size:10px;line-height:1.65;min-height:0;margin:7px 0 11px}
+ .story-step b{font-size:10px}.story-step small{font-size:7px}
+ #assistant{left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));width:auto;max-height:min(42dvh,340px);padding:13px 14px}
+ .avatar{width:42px;height:42px;flex-basis:42px}
+ .avatar:before{inset:-5px}.avatar:after{inset:-9px}
+ .quick{padding:7px 10px;font-size:10px}
+ #chatLog{max-height:clamp(54px,11dvh,100px);min-height:42px}
+ .bottom{bottom:calc(14px + env(safe-area-inset-bottom));left:14px;transform:none;align-items:flex-start;width:auto}
+ #trigger{padding:11px 15px;font-size:9px}
+ #mute{right:14px;left:auto;bottom:calc(20px + env(safe-area-inset-bottom))}
+}
+@media(max-width:480px){
+ h1{font-size:clamp(31px,9vw,43px)}
+ .sub{font-size:10px;max-width:220px}
+ #storyPanel{bottom:calc(68px + env(safe-area-inset-bottom) + min(43dvh,330px) + 8px);padding:10px 11px 8px}
+ .story-step small{letter-spacing:-.02em}
+ #assistant{bottom:calc(68px + env(safe-area-inset-bottom));max-height:min(43dvh,330px);padding:10px;gap:7px}
+ .assistant-role{font-size:9px}
+ .bottom{bottom:calc(12px + env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){.volume-beam,.avatar:before,.avatar:after,#trigger{animation:none!important}}
+
 </style>
 </head>
 <body>
 <main id="stage" aria-label="咖啡豆香气粒子互动特效">
-<canvas id="scene" aria-label="电影感咖啡豆与香气粒子"></canvas><div class="light-leak" aria-hidden="true"></div><div class="grain-overlay" aria-hidden="true"></div><div id="flash"></div>
+<canvas id="scene" aria-label="电影感咖啡豆与香气粒子"></canvas><div class="volume-beam" aria-hidden="true"></div><div class="heat-haze" aria-hidden="true"></div><div class="light-leak" aria-hidden="true"></div><div class="grain-overlay" aria-hidden="true"></div><div id="flash"></div>
 <div class="hud"><div class="eyebrow">ORIGIN STORY &nbsp; / &nbsp; YUNNAN, CHINA</div><h1>一颗豆子的<br><em>三年旅程。</em></h1><div class="sub">从一颗红果，到一杯真正懂得的咖啡。</div></div>
 <div class="brand"><b>FROM LAND TO CUP</b>YUNNAN · COFFEE ORIGIN STORY</div>
 <section id="storyPanel" aria-label="咖啡豆的三年故事">
-  <div class="story-kicker"><span class="story-line"></span> THE LONG WAY TO YOUR CUP</div>
+  <div class="story-kicker"><span class="story-line"></span> ORIGIN → TRANSFORMATION → CUP</div>
   <p id="storyCopy">老板第一次走进云南咖啡地，摘下一颗红果直接嚼。又酸又涩。那一刻，他才发现自己买了很久的咖啡豆，还有太多没弄懂的事。</p>
-  <div class="story-steps" role="group" aria-label="故事阶段">
-    <button class="story-step active" data-step="0"><span>01</span><b>红果</b><small>尝到土地</small></button>
-    <button class="story-step" data-step="1"><span>02</span><b>处理</b><small>追问细节</small></button>
-    <button class="story-step" data-step="2"><span>03</span><b>烘焙</b><small>重新学习</small></button>
-    <button class="story-step" data-step="3"><span>04</span><b>一杯咖啡</b><small>三年之后</small></button>
+  <div class="caliper" role="group" aria-label="咖啡旅程时间轴">
+    <div class="caliper-track"><span class="caliper-progress"></span><span class="caliper-cursor"></span></div>
+    <div class="caliper-ticks">
+      <button class="story-step active" data-step="0"><i>01</i><b>红果</b><small>THE CHERRY</small></button>
+      <button class="story-step" data-step="1"><i>02</i><b>处理</b><small>PROCESS</small></button>
+      <button class="story-step" data-step="2"><i>03</i><b>烘焙</b><small>ROAST</small></button>
+      <button class="story-step" data-step="3"><i>04</i><b>咖啡</b><small>THE CUP</small></button>
+    </div>
   </div>
-  <div class="story-foot"><span>ONE BEAN. YEARS OF LEARNING.</span><span id="storyCount">01 / 04</span></div>
+  <div class="story-foot"><span>ONE BEAN. THREE YEARS.</span><span id="storyCount">01 / 04</span></div>
 </section>
 <button id="mute" type="button" aria-pressed="false">♪ SOUND ON</button>
 <div class="bottom"><button id="trigger" type="button">✦ &nbsp; CRACK THE BEAN</button><div class="hint">口播到「新鲜烘焙」时触发 &nbsp; <kbd>SPACE</kbd> 或点击按钮</div></div>
@@ -177,6 +277,7 @@ h1{text-shadow:0 0 34px #ffb86c20,0 2px 24px #0008}
 
 <div id="status"><span class="dot"></span><span id="statusText">READY FOR CUE</span></div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js';
 
