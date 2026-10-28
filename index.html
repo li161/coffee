@@ -102,10 +102,11 @@ button,input{touch-action:manipulation}
 
 
 /* Cinematic motion layers */
-#stage{isolation:isolate;background:radial-gradient(ellipse at 43% 48%,#87451f 0%,#512815 19%,#28140d 48%,#100705 78%,#050302 100%);animation:ambientGrade 12s ease-in-out infinite alternate}
-@keyframes ambientGrade{0%{filter:saturate(1) brightness(.88)}100%{filter:saturate(1.28) brightness(1.12)}}
-#stage:after{content:"";position:absolute;inset:-20%;z-index:1;pointer-events:none;opacity:.17;background:repeating-linear-gradient(115deg,transparent 0 80px,#ffd29a0a 81px 82px,transparent 83px 160px);animation:lightSweep 22s linear infinite}
-@keyframes lightSweep{to{transform:translate3d(8%,0,0)}}
+/* Premium studio treatment: restrained highlights, photographic depth, subtle film grain */
+#stage{isolation:isolate;background:radial-gradient(ellipse at 43% 44%,#704126 0%,#392116 26%,#1d110c 54%,#0b0705 82%,#040302 100%);animation:studioBreath 18s ease-in-out infinite alternate}
+@keyframes studioBreath{0%{background-position:48% 46%}100%{background-position:53% 50%}}
+#stage:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.075;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");mix-blend-mode:soft-light}
+#stage:before{background:radial-gradient(ellipse at 43% 46%,transparent 18%,#0002 52%,#000b 100%);z-index:2}
 #scene{z-index:0}.hud,.brand,.bottom,#status,#mute{z-index:4}
 .hud{animation:uiRise 1.2s cubic-bezier(.2,.8,.2,1) both}.brand{animation:uiRise 1.4s .15s both}
 @keyframes uiRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -122,7 +123,7 @@ h1{text-shadow:0 0 34px #ffb86c20,0 2px 24px #0008}
 #trigger{box-shadow:0 0 0 1px #e7b86b12,inset 0 0 22px #ffbf6610,0 0 26px #ff9e3b0b;transition:all .3s}
 #trigger:hover{box-shadow:0 0 30px #ffb45a30,inset 0 0 24px #ffbf661b}
 #status .dot{animation:statusPulse 1.6s ease-in-out infinite}@keyframes statusPulse{50%{opacity:.35;box-shadow:0 0 3px #d5a05c}}
-.orbit-stage{position:absolute;z-index:1;left:43%;top:49%;width:min(60vw,720px);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;perspective:800px;opacity:.68}
+.orbit-stage{position:absolute;z-index:1;left:43%;top:49%;width:min(60vw,720px);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;perspective:800px;opacity:.16;filter:blur(.4px)}
 .orbit{position:absolute;inset:13%;border:1px solid #f3b76d23;border-radius:50%;box-shadow:0 0 28px #ff9b3710,inset 0 0 25px #ffb45a09}
 .orbit.one{transform:rotateX(69deg) rotateZ(-20deg);animation:orbitA 19s linear infinite}
 .orbit.two{inset:20%;transform:rotateY(67deg) rotateZ(25deg);border-color:#ffdda02b;animation:orbitB 14s linear infinite}
@@ -130,7 +131,7 @@ h1{text-shadow:0 0 34px #ffb86c20,0 2px 24px #0008}
 .orbit:before,.orbit:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#ffe0a0;box-shadow:0 0 10px 3px #ffad4b99}
 .orbit:before{left:15%;top:15%}.orbit:after{right:13%;bottom:19%;width:3px;height:3px}
 @keyframes orbitA{to{transform:rotateX(69deg) rotateZ(340deg)}}@keyframes orbitB{to{transform:rotateY(67deg) rotateZ(385deg)}}
-.ambient-label{position:absolute;z-index:2;left:43%;top:18%;transform:translateX(-50%);font:9px/1.6 ui-monospace,monospace;letter-spacing:.28em;color:#ffcf91a8;pointer-events:none;white-space:nowrap}
+.ambient-label{position:absolute;z-index:2;left:43%;top:18%;transform:translateX(-50%);font:9px/1.6 ui-monospace,monospace;letter-spacing:.28em;color:#ffcf9180;pointer-events:none;white-space:nowrap;opacity:.45}
 .ambient-label:after{content:"";display:block;height:1px;width:70%;margin:8px auto;background:linear-gradient(90deg,transparent,#ffca8255,transparent)}
 #stage.burst .orbit{border-color:#ffd99b88;box-shadow:0 0 45px #ff9d3b30}
 #stage.burst .orbit.one{animation-duration:2s}#stage.burst .orbit.two{animation-duration:1.5s}
@@ -221,13 +222,25 @@ camera.position.set(0,0,8.5);
 const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
-scene.add(new THREE.HemisphereLight(0xffd7ad,0x281009,2.0));
-const key=new THREE.DirectionalLight(0xffd2a0,4.3);key.position.set(-3,4,5);scene.add(key);
-const rim=new THREE.PointLight(0xd47b37,45,15);rim.position.set(3,1,2);scene.add(rim);
-const fill=new THREE.PointLight(0xffe1b0,18,12);fill.position.set(-2,-2,3);scene.add(fill);
+scene.fog=new THREE.FogExp2(0x160b06,.035);
+scene.add(new THREE.HemisphereLight(0xd9c2a2,0x100704,1.05));
+// Large soft studio key and narrow rim light create believable roast-skin highlights.
+const key=new THREE.DirectionalLight(0xffd8ae,3.1);key.position.set(-3.5,4.5,5);scene.add(key);
+const rim=new THREE.PointLight(0xd17a3d,19,13);rim.position.set(2.8,1.4,-1.5);scene.add(rim);
+const fill=new THREE.PointLight(0xf2d5b0,5,10);fill.position.set(-3,-2,4);scene.add(fill);
+const topLight=new THREE.SpotLight(0xffc982,26,12,Math.PI/5,.75,1.5);topLight.position.set(0,4,3);topLight.target.position.set(0,0,0);scene.add(topLight,topLight.target);
 const beanRoot=new THREE.Group();scene.add(beanRoot);
 const halves=new THREE.Group();beanRoot.add(halves);
-const beanMaterial=new THREE.MeshPhysicalMaterial({color:0x512311,roughness:.25,metalness:.08,clearcoat:1,clearcoatRoughness:.19});
+// Procedural micro-roughness: a subtle roast-skin texture without external image dependencies.
+const skinCanvas=document.createElement('canvas');skinCanvas.width=256;skinCanvas.height=256;
+const skinCtx=skinCanvas.getContext('2d');skinCtx.fillStyle='#888';skinCtx.fillRect(0,0,256,256);
+const skinPixels=skinCtx.getImageData(0,0,256,256);
+for(let i=0;i<skinPixels.data.length;i+=4){const n=118+Math.random()*72;skinPixels.data[i]=n;skinPixels.data[i+1]=n;skinPixels.data[i+2]=n;skinPixels.data[i+3]=255;}
+skinCtx.putImageData(skinPixels,0,0);
+for(let i=0;i<520;i++){const x=Math.random()*256,y=Math.random()*256,r=.25+Math.random()*1.3;skinCtx.fillStyle=Math.random()>.5?'#444':'#ddd';skinCtx.globalAlpha=.12+Math.random()*.24;skinCtx.beginPath();skinCtx.ellipse(x,y,r,r*(.3+Math.random()),Math.random(),0,Math.PI*2);skinCtx.fill();}
+skinCtx.globalAlpha=1;
+const skinTexture=new THREE.CanvasTexture(skinCanvas);skinTexture.wrapS=skinTexture.wrapT=THREE.RepeatWrapping;skinTexture.repeat.set(1.4,1.4);
+const beanMaterial=new THREE.MeshPhysicalMaterial({color:0x512311,roughness:.37,metalness:0,clearcoat:.34,clearcoatRoughness:.32,bumpMap:skinTexture,bumpScale:.024});
 const grooveMaterial=new THREE.MeshStandardMaterial({color:0x1d0c07,roughness:.38,metalness:.03});
 const beanGeo=new THREE.SphereGeometry(1,72,52);
 function makeHalf(side){
@@ -235,7 +248,8 @@ function makeHalf(side){
  const geo=beanGeo.clone(),p=geo.attributes.position;
  for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
   const taper=1-.17*Math.max(0,y);
-  p.setXYZ(i,x*.84*taper,y*1.18,z*.38);
+  const organic=1+.018*Math.sin(x*17+y*11)*Math.cos(z*19-y*7)+.009*Math.sin(y*31+x*8);
+  p.setXYZ(i,x*.84*taper*organic,y*1.18*organic,z*.38*organic);
  }
  geo.computeVertexNormals();
  const mesh=new THREE.Mesh(geo,beanMaterial);mesh.scale.set(.79,.99,1);mesh.position.x=side*.34;mesh.position.y=.03;mesh.position.z=0;mesh.rotation.z=side*.14;mesh.scale.x*=.64;
@@ -248,7 +262,7 @@ function makeHalf(side){
  return group;
 }
 const left=makeHalf(-1),right=makeHalf(1);
-const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.25,40,24),new THREE.MeshBasicMaterial({color:0xc77737,transparent:true,opacity:.055,side:THREE.BackSide,depthWrite:false}));
+const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.25,40,24),new THREE.MeshBasicMaterial({color:0xc77737,transparent:true,opacity:.025,side:THREE.BackSide,depthWrite:false}));
 beanRoot.add(beanGlow);
 beanRoot.rotation.set(-.12,.12,-.28);
 function fitBeanForViewport(){
@@ -257,10 +271,10 @@ function fitBeanForViewport(){
  beanRoot.scale.set(mobile?1.0:1.18,mobile?1.17:1.38,mobile?1.0:1.15);
 }
 fitBeanForViewport();
-const dustCount=460, positions=new Float32Array(dustCount*3), colors=new Float32Array(dustCount*3), sizes=new Float32Array(dustCount);
+const dustCount=300, positions=new Float32Array(dustCount*3), colors=new Float32Array(dustCount*3), sizes=new Float32Array(dustCount);
 for(let i=0;i<dustCount;i++){positions[i*3]=(Math.random()-.5)*7;positions[i*3+1]=(Math.random()-.5)*6;positions[i*3+2]=(Math.random()-.5)*1.4;const gold=Math.random()>.53;colors[i*3]=gold?1:.42;colors[i*3+1]=gold?.67:.19;colors[i*3+2]=gold?.3:.07;sizes[i]=Math.random()*.025+.006;}
 const dustGeo=new THREE.BufferGeometry();dustGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));dustGeo.setAttribute('color',new THREE.BufferAttribute(colors,3));dustGeo.setAttribute('size',new THREE.BufferAttribute(sizes,1));
-const dustMat=new THREE.PointsMaterial({size:.026,vertexColors:true,transparent:true,opacity:.42,depthWrite:false,blending:THREE.AdditiveBlending});
+const dustMat=new THREE.PointsMaterial({size:.018,vertexColors:true,transparent:true,opacity:.22,depthWrite:false,blending:THREE.AdditiveBlending});
 const dust=new THREE.Points(dustGeo,dustMat);scene.add(dust);
 let particles=null;
 function makeBurst(){
