@@ -36,6 +36,18 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px
 
 /* Knowledge-driven roast assistant */
 #stage{padding-right:0}
+#storyPanel{position:absolute;z-index:5;left:clamp(22px,5vw,76px);bottom:clamp(100px,15vh,155px);width:min(410px,34vw);padding:20px 21px 16px;border:1px solid #e6c69b24;border-radius:16px;background:linear-gradient(135deg,#1b100bd9,#110906b8);backdrop-filter:blur(18px);box-shadow:0 22px 70px #0005;color:#f0dfca}
+.story-kicker{display:flex;align-items:center;gap:9px;font-size:8px;letter-spacing:.22em;color:#cda779}
+.story-line{display:inline-block;width:24px;height:1px;background:#d6aa70}
+#storyCopy{font-size:12px;line-height:1.9;color:#e4d0b9;margin:13px 0 16px;min-height:68px}
+.story-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.story-step{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:9px 7px;background:#ffffff04;border:1px solid #ffffff10;border-radius:9px;color:#bfa78e;text-align:left;cursor:pointer;transition:background .25s,border-color .25s,transform .25s}
+.story-step span{font:9px ui-monospace,monospace;opacity:.6}
+.story-step b{font-size:11px;font-weight:500;white-space:nowrap}
+.story-step small{font-size:9px;color:#947b63;white-space:nowrap}
+.story-step.active{background:#b57a4020;border-color:#d5a46a70;color:#ffe0b4;transform:translateY(-2px)}
+.story-step.active span,.story-step.active small{color:#d9b080}
+.story-foot{display:flex;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1px solid #ffffff10;font:8px ui-monospace,monospace;letter-spacing:.13em;color:#8f765e}
 #assistant{position:absolute;z-index:5;right:clamp(16px,2.8vw,42px);top:50%;transform:translateY(-50%);width:min(350px,31vw);max-height:min(690px,82vh);display:flex;flex-direction:column;gap:14px;padding:18px;border:1px solid rgba(235,192,140,.2);border-radius:22px;background:rgba(22,12,9,.66);backdrop-filter:blur(22px);box-shadow:0 20px 80px #0005;color:#f4e3d0}
 .assistant-head{display:flex;align-items:center;gap:12px}.avatar{width:54px;height:54px;flex:0 0 54px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#f3d4a4,#93603d 52%,#392016);border:1px solid #d8b17d66;font-size:25px;box-shadow:0 0 24px #b97b3b22}.assistant-name{font-size:13px;letter-spacing:.08em}.assistant-role{font-size:10px;color:#b99b7e;margin-top:5px}.live-pill{margin-left:auto;border:1px solid #8cbb9566;color:#b4d7ac;border-radius:999px;padding:5px 8px;font-size:9px;white-space:nowrap}
 #chatLog{overflow:auto;min-height:110px;max-height:34vh;display:flex;flex-direction:column;gap:10px;padding:4px 2px;scrollbar-width:thin;scrollbar-color:#80593d transparent}
@@ -44,8 +56,8 @@ kbd{display:inline-flex;align-items:center;justify-content:center;min-width:25px
 #chatForm{display:flex;gap:7px;border:1px solid #d8b17d44;border-radius:12px;padding:5px;background:#10090666}#chatInput{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#fff0dc;font:inherit;font-size:12px;padding:9px}#chatInput::placeholder{color:#9d8067}#sendChat{border:0;border-radius:9px;background:#b77b49;color:#1b0e08;padding:0 13px;cursor:pointer;font-size:12px}
 .roast-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:10px;color:#bd9d7e}.roast-chip{border:1px solid #ffffff18;border-radius:999px;padding:5px 8px;color:#d6b99b}.roast-chip.active{background:#b77b4933;border-color:#d6a16a;color:#ffe0b5}
 #apiNote{font-size:9px;line-height:1.5;color:#92775f}
-@media(max-width:850px){#assistant{right:12px;top:auto;bottom:95px;transform:none;width:min(330px,calc(100vw - 24px));max-height:48vh;padding:12px;gap:9px}.avatar{width:40px;height:40px;flex-basis:40px}.assistant-head{gap:9px}#chatLog{max-height:13vh;min-height:64px}.quick-list{display:none}.hud{max-width:48vw}h1{font-size:clamp(22px,5vw,36px)}.brand{display:none}#mute{right:auto;left:22px;top:auto;bottom:28px}}
-@media(max-width:480px){.hud{top:20px;left:20px;max-width:58vw}.eyebrow{font-size:8px}h1{font-size:22px}.sub{font-size:10px}#assistant{bottom:85px;max-height:47vh}.bottom{bottom:20px;left:22px;transform:none;width:auto;align-items:flex-start}.hint{display:none}#trigger{padding:10px 14px;font-size:9px}#chatLog{max-height:10vh}}
+@media(max-width:850px){#storyPanel{left:16px;bottom:calc(76px + env(safe-area-inset-bottom) + min(42dvh,340px) + 12px);width:min(390px,calc(100vw - 32px));padding:12px 13px 10px}#storyCopy{font-size:11px;line-height:1.65;min-height:0;margin:8px 0 10px}.story-step{padding:6px 5px}.story-step b{font-size:10px}.story-step small{font-size:8px}.story-foot{margin-top:8px;padding-top:7px;font-size:7px}#assistant{right:12px;top:auto;bottom:95px;transform:none;width:min(330px,calc(100vw - 24px));max-height:48vh;padding:12px;gap:9px}.avatar{width:40px;height:40px;flex-basis:40px}.assistant-head{gap:9px}#chatLog{max-height:13vh;min-height:64px}.quick-list{display:none}.hud{max-width:48vw}h1{font-size:clamp(22px,5vw,36px)}.brand{display:none}#mute{right:auto;left:22px;top:auto;bottom:28px}}
+@media(max-width:480px){#storyPanel{bottom:calc(68px + env(safe-area-inset-bottom) + min(43dvh,330px) + 9px);padding:10px 11px 8px}.story-kicker{font-size:7px}#storyCopy{font-size:10px;line-height:1.55;margin:7px 0 8px}.story-step{gap:3px;padding:5px 4px}.story-step b{font-size:9px}.story-step small{font-size:7px}.story-foot{margin-top:6px;padding-top:6px;font-size:6px}.hud{top:20px;left:20px;max-width:58vw}.eyebrow{font-size:8px}h1{font-size:22px}.sub{font-size:10px}#assistant{bottom:85px;max-height:47vh}.bottom{bottom:20px;left:22px;transform:none;width:auto;align-items:flex-start}.hint{display:none}#trigger{padding:10px 14px;font-size:9px}#chatLog{max-height:10vh}}
 
 
 /* Mobile H5: keep the bean visible above the compact chat dock */
@@ -55,6 +67,7 @@ button,input{touch-action:manipulation}
 #chatInput{user-select:text;-webkit-user-select:text}
 @media(max-width:850px){
  #stage{height:100dvh;min-height:560px}
+ #storyPanel{bottom:calc(76px + env(safe-area-inset-bottom) + min(42dvh,340px) + 10px)}
  .hud{top:max(18px,env(safe-area-inset-top));left:18px;max-width:62vw}
  .eyebrow{letter-spacing:.2em}
  .sub{max-width:240px;line-height:1.55;letter-spacing:.04em}
@@ -80,6 +93,8 @@ button,input{touch-action:manipulation}
  h1{font-size:clamp(21px,6vw,28px);line-height:1.02;margin-top:9px}
  .sub{font-size:10px;margin-top:8px;max-width:200px}
  #assistant{bottom:calc(68px + env(safe-area-inset-bottom));max-height:min(43dvh,330px);padding:10px;gap:7px}
+ #storyPanel{bottom:calc(68px + env(safe-area-inset-bottom) + min(43dvh,330px) + 8px);width:calc(100vw - 24px);left:12px}
+ #storyCopy{max-height:9dvh;overflow:auto}
  .assistant-head{gap:8px}
  .avatar{width:36px;height:36px;flex-basis:36px;font-size:19px}
  .assistant-name{font-size:11px}
@@ -143,8 +158,19 @@ h1{text-shadow:0 0 34px #ffb86c20,0 2px 24px #0008}
 <body>
 <main id="stage" aria-label="咖啡豆香气粒子互动特效">
 <canvas id="scene" aria-label="旋转咖啡豆与香气粒子"></canvas><div class="orbit-stage" aria-hidden="true"><div class="orbit one"></div><div class="orbit two"></div><div class="orbit three"></div></div><div class="ambient-label" aria-hidden="true">AROMA FIELD / PARTICLE SYSTEM 03</div><div id="flash"></div>
-<div class="hud"><div class="eyebrow">DAY 03 &nbsp; / &nbsp; COFFEE BEAN</div><h1>Freshly roasted.<br>Unfold the aroma.</h1><div class="sub">新鲜烘焙 · 一开袋，香气便有了形状</div></div>
-<div class="brand"><b>AROMA STUDIO</b>LIVE VISUAL EFFECTS / 003</div>
+<div class="hud"><div class="eyebrow">ORIGIN STORY &nbsp; / &nbsp; YUNNAN, CHINA</div><h1>一颗豆子的<br><em>三年旅程。</em></h1><div class="sub">从一颗红果，到一杯真正懂得的咖啡。</div></div>
+<div class="brand"><b>FROM LAND TO CUP</b>YUNNAN · COFFEE ORIGIN STORY</div>
+<section id="storyPanel" aria-label="咖啡豆的三年故事">
+  <div class="story-kicker"><span class="story-line"></span> THE LONG WAY TO YOUR CUP</div>
+  <p id="storyCopy">老板第一次走进云南咖啡地，摘下一颗红果直接嚼。又酸又涩。那一刻，他才发现自己买了很久的咖啡豆，还有太多没弄懂的事。</p>
+  <div class="story-steps" role="group" aria-label="故事阶段">
+    <button class="story-step active" data-step="0"><span>01</span><b>红果</b><small>尝到土地</small></button>
+    <button class="story-step" data-step="1"><span>02</span><b>处理</b><small>追问细节</small></button>
+    <button class="story-step" data-step="2"><span>03</span><b>烘焙</b><small>重新学习</small></button>
+    <button class="story-step" data-step="3"><span>04</span><b>一杯咖啡</b><small>三年之后</small></button>
+  </div>
+  <div class="story-foot"><span>ONE BEAN. YEARS OF LEARNING.</span><span id="storyCount">01 / 04</span></div>
+</section>
 <button id="mute" type="button" aria-pressed="false">♪ SOUND ON</button>
 <div class="bottom"><button id="trigger" type="button">✦ &nbsp; CRACK THE BEAN</button><div class="hint">口播到「新鲜烘焙」时触发 &nbsp; <kbd>SPACE</kbd> 或点击按钮</div></div>
 
@@ -172,6 +198,22 @@ let muted=false, bursting=false, burstStart=0, lastTrigger=0;
    The API URL is intentionally unset until the project owner supplies an endpoint/key strategy. */
 const chatLog=document.querySelector('#chatLog'), chatForm=document.querySelector('#chatForm'), chatInput=document.querySelector('#chatInput');
 const roastChip=document.querySelector('#roastChip'), apiNote=document.querySelector('#apiNote');
+const storyCopy=document.querySelector('#storyCopy'), storyCount=document.querySelector('#storyCount');
+const storySteps=[...document.querySelectorAll('.story-step')];
+const storyTexts=[
+ '老板第一次走进云南咖啡地，摘下一颗红果直接嚼。又酸又涩。那一刻，他才发现自己买了很久的咖啡豆，还有太多没弄懂的事。',
+ '咖农告诉他，从果实到咖啡，要经历采摘、去皮、发酵和晾晒。他开始追问：哪座山头、谁来采摘、发酵几天？每个答案都影响杯中的味道。',
+ '回来后，他推翻了当年所有采购标准。不是只问价格和等级，而是重新理解产地、处理法、含水率与烘焙曲线——把“买豆子”变成认真学习。',
+ '第三年，他才觉得自己的咖啡“能喝了”。一颗豆子从土地到杯子的距离，比大多数人想象的长得多。现在这杯咖啡里，也有那三年的耐心。'
+];
+storySteps.forEach((button,index)=>button.addEventListener('click',()=>{
+ storySteps.forEach((item,i)=>item.classList.toggle('active',i===index));
+ storyCopy.textContent=storyTexts[index];storyCount.textContent=String(index+1).padStart(2,'0')+' / 04';
+ if(index===2){targetBeanColor.copy(roastColors.dark);roastChip.textContent='烘焙阶段 · 香气发展';}
+ if(index===0){targetBeanColor.copy(roastColors.light);roastChip.textContent='云南红果 · 果实阶段';}
+ if(index===1){targetBeanColor.copy(roastColors.medium);roastChip.textContent='处理阶段 · 发酵与晾晒';}
+ if(index===3){targetBeanColor.copy(roastColors.medium);roastChip.textContent='三年之后 · 一杯咖啡';}
+}));
 let targetBeanColor=new THREE.Color(0x512311), currentRoast='中烘';
 const roastColors={light:new THREE.Color(0x9b6134),medium:new THREE.Color(0x512311),dark:new THREE.Color(0x24100b)};
 function setRoastFromText(text){
