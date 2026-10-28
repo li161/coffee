@@ -350,6 +350,7 @@ import * as CANNON from 'https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cann
 
 const stage=document.querySelector('#stage'), canvas=document.querySelector('#scene');
 const triggerButton=document.querySelector('#trigger'), muteButton=document.querySelector('#mute'), statusText=document.querySelector('#statusText');
+const assistant = document.getElementById('assistant');
 let muted=false, bursting=false, burstStart=0, lastTrigger=0;
 
 /* Chat answers can be powered by a knowledge API. Set window.COFFEE_KNOWLEDGE_API to your endpoint.
