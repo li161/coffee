@@ -417,6 +417,16 @@ const seamPoints=[];
 for(let i=0;i<=64;i++){const y=-.96+i/64*1.92;const x=.075*Math.sin(y*3.15)+.018*Math.sin(y*8);const z=.48*Math.sqrt(Math.max(.015,1-y*y))-.095*Math.pow(Math.max(0,1-y*y),.42);seamPoints.push(new THREE.Vector3(x*.91*(1-.25*y*y),y*1.25,z+.008));}
 const seamGeo=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seamPoints),128,.012,8,false);
 const seam=new THREE.Mesh(seamGeo,grooveMaterial);beanRoot.add(seam);
+// Pre-cut triangle shells allow the bean to physically part and magnetically reunite.
+const splitSource=beanGeo.toNonIndexed(),splitBuckets=[[],[]],splitNormals=[[],[]],splitUvs=[[],[]];
+const srcPos=splitSource.attributes.position,srcNorm=splitSource.attributes.normal,srcUv=splitSource.attributes.uv;
+for(let i=0;i<srcPos.count;i+=3){
+ const center=(srcPos.getX(i)+srcPos.getX(i+1)+srcPos.getX(i+2))/3,side=center<0?0:1;
+ for(let k=0;k<3;k++){const n=i+k;splitBuckets[side].push(srcPos.getX(n),srcPos.getY(n),srcPos.getZ(n));splitNormals[side].push(srcNorm.getX(n),srcNorm.getY(n),srcNorm.getZ(n));splitUvs[side].push(srcUv.getX(n),srcUv.getY(n));}
+}
+function buildShell(side){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(splitBuckets[side],3));g.setAttribute('normal',new THREE.Float32BufferAttribute(splitNormals[side],3));g.setAttribute('uv',new THREE.Float32BufferAttribute(splitUvs[side],2));const m=new THREE.Mesh(g,beanMaterial);m.visible=false;beanRoot.add(m);return m;}
+const shellLeft=buildShell(0),shellRight=buildShell(1);
+let shellSplitActive=false;
 const beanGlow=new THREE.Mesh(new THREE.SphereGeometry(1.42,48,32),new THREE.MeshBasicMaterial({color:0xd77a37,transparent:true,opacity:.035,side:THREE.BackSide,depthWrite:false}));
 beanRoot.add(beanGlow);
 beanRoot.rotation.set(-.12,.12,-.28);
@@ -431,7 +441,7 @@ for(let i=0;i<dustCount;i++){positions[i*3]=(Math.random()-.5)*7;positions[i*3+1
 const dustGeo=new THREE.BufferGeometry();dustGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));dustGeo.setAttribute('color',new THREE.BufferAttribute(colors,3));dustGeo.setAttribute('size',new THREE.BufferAttribute(sizes,1));
 const dustMat=new THREE.PointsMaterial({size:.018,vertexColors:true,transparent:true,opacity:.22,depthWrite:false,blending:THREE.AdditiveBlending});
 const dust=new THREE.Points(dustGeo,dustMat);scene.add(dust);
-let particles=null;
+let particles=null,smokeParticles=null;
 function makeBurst(){
  if(particles){scene.remove(particles);particles.geometry.dispose();particles.material.dispose();}
  const count=850,pos=new Float32Array(count*3),vel=new Float32Array(count*3),col=new Float32Array(count*3),life=new Float32Array(count),sz=new Float32Array(count);
@@ -445,6 +455,13 @@ function makeBurst(){
  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));geo.setAttribute('size',new THREE.BufferAttribute(sz,1));geo.userData={vel,life,origin:performance.now()/1000};
  const mat=new THREE.PointsMaterial({size:.045,vertexColors:true,transparent:true,opacity:1,depthWrite:false,blending:THREE.AdditiveBlending});
  particles=new THREE.Points(geo,mat);particles.position.set(0,-.1,.6);scene.add(particles);
+ // A second, slower translucent plume reads as warm roasting smoke rather than sparks.
+ if(smokeParticles){scene.remove(smokeParticles);smokeParticles.geometry.dispose();smokeParticles.material.dispose();}
+ const smokeCount=110,sp=new Float32Array(smokeCount*3),sv=new Float32Array(smokeCount*3),sl=new Float32Array(smokeCount),ss=new Float32Array(smokeCount);
+ for(let i=0;i<smokeCount;i++){sp[i*3]=(Math.random()-.5)*.32;sp[i*3+1]=(Math.random()-.5)*.25;sp[i*3+2]=(Math.random()-.5)*.25;sv[i*3]=(Math.random()-.5)*.45;sv[i*3+1]=.35+Math.random()*.9;sv[i*3+2]=(Math.random()-.5)*.25;sl[i]=1.2+Math.random()*.8;ss[i]=.07+Math.random()*.12;}
+ const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));sg.setAttribute('size',new THREE.BufferAttribute(ss,1));sg.userData={vel:sv,life:sl,origin:performance.now()/1000};
+ const sm=new THREE.PointsMaterial({color:0xb88761,size:.12,transparent:true,opacity:.18,depthWrite:false,blending:THREE.NormalBlending,sizeAttenuation:true});
+ smokeParticles=new THREE.Points(sg,sm);smokeParticles.position.set(0,-.15,.3);scene.add(smokeParticles);
 }
 let audioCtx=null;
 function crackSound(){
@@ -466,11 +483,14 @@ function trigger(){
  const now=performance.now();if(bursting||now-lastTrigger<120)return;lastTrigger=now;
  bursting=true;burstStart=clock.getElapsedTime();stage.classList.remove('burst');void stage.offsetWidth;stage.classList.add('burst');
  makeBurst();crackSound();statusText.textContent='AROMA RELEASED';triggerButton.textContent='✦  REFORMING AROMA';
+ beanMesh.visible=false;seam.visible=false;shellLeft.visible=true;shellRight.visible=true;shellSplitActive=true;
  if(window.gsap){
   gsap.fromTo('#flash',{opacity:0},{opacity:1,duration:.18,yoyo:true,repeat:1,ease:'power2.out'});
-  gsap.fromTo('.heat-haze',{scale:1,opacity:.18},{scale:1.34,opacity:.58,duration:.8,yoyo:true,repeat:1,ease:'sine.inOut'});
-  gsap.to(beanMesh.rotation,{y:beanMesh.rotation.y+Math.PI*2,duration:2,ease:'power2.inOut'});
-  gsap.fromTo(beanMesh.scale,{x:beanMesh.scale.x,y:beanMesh.scale.y,z:beanMesh.scale.z},{x:beanMesh.scale.x*.72,y:beanMesh.scale.y*1.12,z:beanMesh.scale.z,duration:.48,yoyo:true,repeat:3,ease:'power2.inOut'});
+  gsap.fromTo('.heat-haze',{scale:1,opacity:.18},{scale:1.34,opacity:.58,duration:.9,yoyo:true,repeat:1,ease:'sine.inOut'});
+  gsap.to(shellLeft.position,{x:-.34,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
+  gsap.to(shellRight.position,{x:.34,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
+  gsap.to(shellLeft.rotation,{z:-.12,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
+  gsap.to(shellRight.rotation,{z:.12,duration:.72,ease:'power2.out',yoyo:true,repeat:1,repeatDelay:.45});
  }
 }
 triggerButton.addEventListener('click',trigger);
@@ -496,13 +516,19 @@ function animate(){
   const baseX=mobile?1.0:1.24,baseY=mobile?1.17:1.48,baseZ=mobile?1.0:1.18;
   const swell=1+pulse*.075;
   beanRoot.scale.set(baseX*swell,baseY*swell,baseZ*swell);beanGlow.material.opacity=.035+.12*pulse;
-  if(p>=.8){bursting=false;fitBeanForViewport();beanGlow.material.opacity=.035;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
+  if(p>=2.1){bursting=false;fitBeanForViewport();beanGlow.material.opacity=.035;beanMesh.visible=true;seam.visible=true;shellLeft.visible=false;shellRight.visible=false;shellLeft.position.set(0,0,0);shellRight.position.set(0,0,0);shellLeft.rotation.set(0,0,0);shellRight.rotation.set(0,0,0);shellSplitActive=false;stage.classList.remove('burst');statusText.textContent='READY FOR CUE';triggerButton.textContent='✦  CRACK THE BEAN';}
  }
  if(particles){
   const geo=particles.geometry,arr=geo.attributes.position.array,vel=geo.userData.vel,life=geo.userData.life,age=t-geo.userData.origin;
   for(let i=0;i<life.length;i++){const j=i*3,lt=age/life[i];if(lt<1){arr[j]+=vel[j]*.008;arr[j+1]+=vel[j+1]*.008;arr[j+2]+=vel[j+2]*.008;vel[j+1]-=.035;}else{arr[j]=0;arr[j+1]=-9;arr[j+2]=0;}}
   geo.attributes.position.needsUpdate=true;particles.material.opacity=Math.max(0,1-age/.9);
   if(age>.95){scene.remove(particles);particles.geometry.dispose();particles.material.dispose();particles=null;}
+ }
+ if(smokeParticles){
+  const geo=smokeParticles.geometry,arr=geo.attributes.position.array,vel=geo.userData.vel,life=geo.userData.life,age=t-geo.userData.origin;
+  for(let i=0;i<life.length;i++){const j=i*3,lt=age/life[i];if(lt<1){arr[j]+=vel[j]*.008+Math.sin(t*1.4+i)*.001;arr[j+1]+=vel[j+1]*.008;arr[j+2]+=vel[j+2]*.008;arr[j]+=(arr[j])*.0003;}else{arr[j]=0;arr[j+1]=-9;arr[j+2]=0;}}
+  geo.attributes.position.needsUpdate=true;smokeParticles.material.opacity=Math.max(0,.18-age/10);
+  if(age>2.1){scene.remove(smokeParticles);smokeParticles.geometry.dispose();smokeParticles.material.dispose();smokeParticles=null;}
  }
  parallaxX+=(pointerX-parallaxX)*.025;parallaxY+=(pointerY-parallaxY)*.025;
  if(!bursting){beanRoot.rotation.y=.12+Math.sin(t*.48)*.23+parallaxX*.13;beanRoot.rotation.x=-.12+Math.sin(t*.36)*.055-parallaxY*.08;}
